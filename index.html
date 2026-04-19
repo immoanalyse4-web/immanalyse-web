@@ -2807,12 +2807,15 @@ function submitWaitlist(event, source){
     return;
   }
   const plan = G('checkout-modal')?.getAttribute('data-plan') || 'pro';
+  // Lokal speichern (Backup)
   const isNew = saveWaitlistEntry({
     email,
     plan: source === 'modal' ? plan : 'pro',
     source,
     date: new Date().toISOString()
   });
+  // Zu Brevo senden (Hintergrund – nicht blockierend)
+  sendToBrevo(email, { plan: source === 'modal' ? plan : 'pro', source });
   if(successEl) successEl.classList.add('show');
   if(emailEl) emailEl.value = '';
   // Counter erhöhen (sichtbarer Effekt)
@@ -2830,6 +2833,46 @@ function submitWaitlist(event, source){
     }, 3500);
   }
 }
+
+// ============================================================
+//  BREVO INTEGRATION – Kontakte zur Warteliste hinzufügen
+//  Daten landen parallel in Brevo (Liste ID 2).
+//  Fehler laufen still – lokaler Backup greift immer.
+// ============================================================
+const BREVO_API_KEY = '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';
+const BREVO_LIST_ID = 2;
+function sendToBrevo(email, attributes){
+  if(!email) return;
+  try{
+    fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': BREVO_API_KEY
+      },
+      body: JSON.stringify({
+        email: email,
+        attributes: {
+          PLAN: (attributes && attributes.plan) || 'pro',
+          SOURCE: (attributes && attributes.source) || 'website'
+        },
+        listIds: [BREVO_LIST_ID],
+        updateEnabled: true
+      })
+    }).then(function(r){
+      if(!r.ok && r.status !== 400){
+        console.warn('Brevo response status:', r.status);
+      }
+    }).catch(function(err){
+      // Stumm fehlschlagen – User merkt nichts, Daten sind lokal gespeichert
+      console.warn('Brevo sync error:', err);
+    });
+  } catch(e){
+    console.warn('Brevo unreachable:', e);
+  }
+}
+
 
 // Export der Waitlist für dich als Betreiber (via Konsole aufrufbar)
 window.exportWaitlist = function(){

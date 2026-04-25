@@ -1,0 +1,4107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImmoDeal – Professionelle Immobilienanalyse</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   ANPASSEN-GUIDE (für dich):
+   - Farben: suche nach den :root Variablen unten
+   - Preise: suche nach "PREIS ANPASSEN"
+   - Schwellwerte der Ampeln: suche nach "SCHWELLWERT"
+   - Texte: suche nach "TEXT ANPASSEN"
+   ===================================================== */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:clip;}
+
+:root{
+  /* === FARBEN ANPASSEN === */
+  --bg:        #f5f4f0;
+  --surface:   #ffffff;
+  --surface2:  #f0efe9;
+  --border:    #e0ddd4;
+  --text:      #18170f;
+  --muted:     #6a6860;
+  --hint:      #9c9a91;
+  --green:     #1c7a4b;
+  --green-bg:  #eaf7f0;
+  --green-bd:  #9ed4b8;
+  --yellow:    #7a5c00;
+  --yellow-bg: #fef8e6;
+  --yellow-bd: #e8cc60;
+  --red:       #b83228;
+  --red-bg:    #fdf0ee;
+  --red-bd:    #e4b0a8;
+  --accent:    #1a3fa0;
+  --accent-bg: #eef2fc;
+  --radius:    14px;
+  --radius-sm: 9px;
+  --shadow:    0 1px 2px rgba(0,0,0,.05),0 3px 10px rgba(0,0,0,.04);
+}
+
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---- HEADER ---- */
+.hdr{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:200;
+}
+.hdr-inner{
+  max-width:1080px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;padding:0 1.5rem;
+}
+.logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:inherit}
+.logo-mark{
+  width:36px;height:36px;background:var(--text);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:15px;font-weight:700;letter-spacing:-.03em;flex-shrink:0;
+}
+.logo-name{font-size:17px;font-weight:600;letter-spacing:-.025em}
+.logo-tag{font-size:11px;color:var(--hint);letter-spacing:.06em;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:.75rem}
+.badge-pro{
+  font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--accent-bg);color:var(--accent);
+  padding:.3rem .75rem;border-radius:20px;border:1px solid #c4d3f5;
+}
+
+/* ---- MAIN WRAP ---- */
+.wrap{max-width:1080px;margin:0 auto;padding:2rem 1.5rem 6rem}
+
+/* ---- HERO ---- */
+.hero{text-align:center;padding:2.5rem 0 2rem}
+.hero h1{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:clamp(1.9rem,4.5vw,3rem);
+  line-height:1.08;letter-spacing:-.01em;margin-bottom:.65rem;
+}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{font-size:16px;color:var(--muted);max-width:480px;margin:0 auto}
+
+/* ---- STEP INDICATOR ---- */
+.steps{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;margin:1.75rem 0 2.5rem;flex-wrap:wrap;
+}
+.step-item{display:flex;align-items:center;gap:0}
+.step-btn{
+  display:flex;align-items:center;gap:.55rem;
+  cursor:pointer;padding:.3rem .5rem;border-radius:8px;
+  transition:background .15s;
+}
+.step-btn:hover{background:var(--surface2)}
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:var(--hint);
+  background:var(--surface);transition:all .25s;flex-shrink:0;
+}
+.step-label{font-size:13px;color:var(--hint);font-weight:500;transition:color .25s;white-space:nowrap}
+.step-line{width:36px;height:1px;background:var(--border);margin:0 .1rem;flex-shrink:0}
+
+/* states */
+.step-item.is-active .step-num{background:var(--text);border-color:var(--text);color:#fff}
+.step-item.is-active .step-label{color:var(--text);font-weight:600}
+.step-item.is-done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+.step-item.is-done .step-label{color:var(--green)}
+.step-item.is-done .step-line{background:var(--green)}
+
+/* ---- CARDS ---- */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.75rem 2rem;
+  box-shadow:var(--shadow);margin-bottom:1.25rem;
+}
+.card-head{
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:1.35rem;display:flex;align-items:center;gap:.45rem;
+}
+
+/* ---- FORM ---- */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.1rem}
+
+.field{display:flex;flex-direction:column;gap:.38rem}
+.field-label{font-size:13px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:.35rem}
+
+.inp-wrap{
+  display:flex;align-items:stretch;
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--surface);overflow:hidden;
+  transition:border-color .18s,box-shadow .18s;
+}
+.inp-wrap:focus-within{border-color:#6b8ad4;box-shadow:0 0 0 3px rgba(107,138,212,.15)}
+
+.inp-unit{
+  padding:0 .8rem;font-size:13px;font-weight:500;color:var(--muted);
+  background:var(--surface2);display:flex;align-items:center;white-space:nowrap;
+  border-right:1px solid var(--border);flex-shrink:0;user-select:none;
+}
+.inp-unit.right{border-right:none;border-left:1px solid var(--border)}
+
+.inp-wrap input[type="number"],
+.inp-wrap input[type="text"],
+.inp-wrap select{
+  flex:1;min-width:0;
+  border:none;outline:none;
+  padding:.65rem .85rem;
+  font-size:16px;font-family:inherit;
+  background:transparent;color:var(--text);
+  height:44px;
+}
+.inp-wrap select{cursor:pointer;padding-left:.75rem}
+.inp-wrap input::placeholder{color:var(--hint)}
+
+/* remove number spinners */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+/* ---- TOOLTIP ---- */
+.tip{position:relative;display:inline-flex;cursor:help}
+.tip-ico{
+  width:15px;height:15px;border-radius:50%;
+  border:1px solid var(--border);display:inline-flex;
+  align-items:center;justify-content:center;font-size:9px;
+  color:var(--hint);flex-shrink:0;
+}
+.tip-box{
+  display:none;position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);
+  background:#1a1917;color:#fff;font-size:12px;
+  padding:.55rem .8rem;border-radius:7px;width:210px;
+  z-index:500;line-height:1.5;pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.tip-box::after{
+  content:'';position:absolute;top:100%;left:50%;
+  transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:#1a1917;
+}
+.tip:hover .tip-box{display:block}
+
+/* ---- DIVIDER ---- */
+.divider{
+  display:flex;align-items:center;gap:.9rem;
+  margin:1.75rem 0 1.2rem;
+}
+.divider span{
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ---- BUTTONS ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:.7rem 1.6rem;border-radius:var(--radius-sm);
+  font-family:inherit;font-size:14.5px;font-weight:500;
+  cursor:pointer;border:none;transition:all .15s;text-decoration:none;
+}
+.btn-primary{background:var(--text);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.btn-primary:hover{background:#2a2920;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:var(--surface2)}
+.btn-big{padding:.9rem 2.25rem;font-size:15.5px;border-radius:11px}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#15623c}
+
+.sec-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border);
+}
+
+/* ---- PAGES ---- */
+.pg{display:none;animation:fadeUp .3s ease both}
+.pg.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---- FIN PREVIEW ---- */
+.fin-prev{
+  margin-top:1.5rem;padding:1.25rem 1.5rem;
+  background:var(--surface2);border-radius:var(--radius-sm);
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;
+  border:1px solid var(--border);
+}
+.fp-item{}
+.fp-label{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem;font-weight:600}
+.fp-val{font-size:17px;font-weight:600;letter-spacing:-.01em}
+
+/* ===================== RESULTS ===================== */
+
+/* Verdict */
+.verdict{
+  border-radius:var(--radius);padding:2.25rem 2rem;
+  text-align:center;margin-bottom:1.25rem;
+  border:1.5px solid;
+}
+.verdict.v-green{background:var(--green-bg);border-color:var(--green-bd)}
+.verdict.v-yellow{background:var(--yellow-bg);border-color:var(--yellow-bd)}
+.verdict.v-red{background:var(--red-bg);border-color:var(--red-bd)}
+
+.verdict-icon-ring{
+  width:64px;height:64px;border-radius:50%;margin:0 auto .85rem;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:700;border:2.5px solid;
+}
+.v-green .verdict-icon-ring{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.v-yellow .verdict-icon-ring{background:var(--yellow-bg);border-color:var(--yellow);color:var(--yellow)}
+.v-red .verdict-icon-ring{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+
+.verdict-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem}
+.v-green .verdict-eyebrow{color:var(--green)}
+.v-yellow .verdict-eyebrow{color:var(--yellow)}
+.v-red .verdict-eyebrow{color:var(--red)}
+
+.verdict-title{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:2rem;line-height:1;margin-bottom:.55rem;
+}
+.v-green .verdict-title{color:var(--green)}
+.v-yellow .verdict-title{color:var(--yellow)}
+.v-red .verdict-title{color:var(--red)}
+
+.verdict-desc{font-size:15px;color:var(--muted);max-width:460px;margin:0 auto}
+.verdict-next{margin-top:.85rem;font-size:13px;color:var(--muted);font-style:italic}
+
+/* Score bar */
+.score-wrap{display:flex;align-items:center;gap:1.25rem;padding:1.25rem 0}
+.score-ring{
+  width:72px;height:72px;border-radius:50%;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:2.5px solid;font-weight:700;
+}
+.score-ring .s-num{font-size:24px;line-height:1}
+.score-ring .s-den{font-size:11px;color:var(--muted);font-weight:400}
+.score-bar-outer{flex:1}
+.score-bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin:.55rem 0}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.25,.8,.25,1)}
+.score-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--hint)}
+
+/* Tabs */
+.tabs{
+  display:flex;gap:0;border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem;overflow-x:auto;
+}
+.tab{
+  padding:.65rem 1.1rem;font-size:13.5px;font-weight:500;color:var(--muted);
+  cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;
+  white-space:nowrap;transition:color .15s;
+}
+.tab.on{color:var(--text);border-bottom-color:var(--text)}
+.tab:hover:not(.on){color:var(--text)}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;margin-bottom:1.25rem}
+.kpi{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:1.1rem 1.2rem;
+  border-left:3.5px solid var(--border);
+}
+.kpi.g{border-left-color:var(--green)}.kpi.g .kv{color:var(--green)}
+.kpi.y{border-left-color:#d4a017}.kpi.y .kv{color:var(--yellow)}
+.kpi.r{border-left-color:var(--red)}.kpi.r .kv{color:var(--red)}
+.kpi.n{border-left-color:var(--border)}
+.kl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.35rem}
+.kv{font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.ks{font-size:11.5px;color:var(--hint);margin-top:.3rem}
+
+/* Fin detail grid */
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.85rem}
+.fi{}.fi-l{font-size:12px;color:var(--muted);margin-bottom:.2rem}.fi-v{font-size:15px;font-weight:500}
+
+/* Ampel table */
+.amp-tbl{width:100%;border-collapse:collapse}
+.amp-tbl th{font-size:11.5px;color:var(--hint);font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem;text-align:left;border-bottom:1px solid var(--border)}
+.amp-tbl td{padding:.7rem .75rem;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+.amp-tbl tr:last-child td{border-bottom:none}
+.dot-wrap{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dot.g{background:var(--green)}.dot.y{background:#d4a017}.dot.r{background:var(--red)}
+.dot-wrap.g{color:var(--green)}.dot-wrap.y{color:var(--yellow)}.dot-wrap.r{color:var(--red)}
+
+/* Cashflow rows */
+.cf-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.6rem 0;border-bottom:1px solid var(--border);font-size:14px;
+}
+.cf-row:last-child{border-bottom:none}
+.cf-row.bold{font-weight:600;font-size:15px}
+.cf-pos{color:var(--green)}.cf-neg{color:var(--red)}
+
+/* List items */
+.li{display:flex;gap:.7rem;padding:.7rem 0;border-bottom:1px solid var(--border)}
+.li:last-child{border-bottom:none}
+.li-ico{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;
+}
+.li-ico.g{background:var(--green-bg);color:var(--green)}
+.li-ico.a{background:var(--yellow-bg);color:var(--yellow)}
+.li p{font-size:13.5px;line-height:1.55;color:var(--text)}
+
+/* Check rows */
+.chk-row{
+  display:grid;grid-template-columns:1fr auto auto;gap:1rem;
+  align-items:start;padding:.9rem 0;border-bottom:1px solid var(--border);
+}
+.chk-row:last-child{border-bottom:none}
+.chk-name{font-size:14px;font-weight:600}
+.chk-hint{font-size:12px;color:var(--muted);margin-top:.15rem}
+.chk-tip{font-size:12px;color:var(--hint);margin-top:.25rem;font-style:italic}
+.chk-v{font-size:14px;font-weight:600;text-align:right;white-space:nowrap}
+.badge{font-size:11px;font-weight:700;padding:.25rem .65rem;border-radius:20px;letter-spacing:.03em;white-space:nowrap}
+.bg-g{background:var(--green-bg);color:var(--green)}
+.bg-y{background:var(--yellow-bg);color:var(--yellow)}
+.bg-r{background:var(--red-bg);color:var(--red)}
+
+/* Szenario */
+.sz{border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem 1.25rem;margin-bottom:.85rem}
+.sz:last-child{margin-bottom:0}
+.sz-h{font-size:14px;font-weight:600;margin-bottom:.65rem}
+.sz-g{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.sz-i{font-size:12px;color:var(--muted)}.sz-i span{display:block;font-size:13.5px;font-weight:500;color:var(--text);margin-top:.15rem}
+
+/* ---- PAYWALL / PRICING ---- */
+.paywall-overlay{
+  position:relative;margin-top:1.5rem;
+}
+.paywall-blur{
+  filter:blur(4px);pointer-events:none;user-select:none;
+  opacity:.55;border-radius:var(--radius);overflow:hidden;
+}
+.paywall-box{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  z-index:10;
+}
+.paywall-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:2rem 2.5rem;
+  text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1);
+  max-width:380px;width:90%;
+}
+.pw-lock{font-size:28px;margin-bottom:.75rem}
+.pw-title{font-size:20px;font-weight:700;margin-bottom:.4rem}
+.pw-sub{font-size:14px;color:var(--muted);margin-bottom:1.5rem;line-height:1.5}
+.pw-price{
+  font-size:36px;font-weight:800;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:.25rem;
+}
+.pw-price sup{font-size:18px;vertical-align:top;margin-top:.5rem;margin-right:.15rem}
+.pw-price-note{font-size:13px;color:var(--hint);margin-bottom:1.5rem}
+.pw-features{text-align:left;margin-bottom:1.5rem}
+.pw-feat{display:flex;align-items:center;gap:.6rem;font-size:13.5px;padding:.35rem 0;color:var(--muted)}
+.pw-feat::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.pw-btn{
+  display:block;width:100%;padding:1rem;border-radius:10px;
+  background:var(--text);color:#fff;font-size:15px;font-weight:600;
+  border:none;cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.pw-btn:hover{background:#2a2920;transform:translateY(-1px)}
+.pw-note{font-size:12px;color:var(--hint);margin-top:.85rem}
+
+/* Pricing page */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:1.5rem;max-width:640px;margin-left:auto;margin-right:auto}
+.pricing-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:1.75rem;
+  position:relative;transition:box-shadow .2s;
+}
+.pricing-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.pricing-card.featured{border-color:#4a72d4;box-shadow:0 0 0 1px #4a72d4}
+.pc-tag{
+  position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--accent);color:#fff;padding:.25rem .9rem;border-radius:20px;
+  white-space:nowrap;
+}
+.pc-name{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem}
+.pc-price{font-size:34px;font-weight:800;letter-spacing:-.03em;margin-bottom:.3rem}
+.pc-price span{font-size:16px;font-weight:400;color:var(--muted)}
+.pc-desc{font-size:13px;color:var(--muted);margin-bottom:1.25rem;min-height:40px}
+.pc-feats{}
+.pc-feat{display:flex;gap:.55rem;align-items:flex-start;font-size:13px;padding:.3rem 0;border-top:1px solid var(--surface2)}
+.pc-feat .ck{color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.pc-feat .xx{color:var(--hint);flex-shrink:0;margin-top:1px}
+.pc-btn{
+  display:block;width:100%;margin-top:1.5rem;padding:.85rem;
+  border-radius:9px;font-family:inherit;font-size:14.5px;font-weight:600;
+  cursor:pointer;border:none;transition:all .15s;
+}
+.pc-btn.outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+.pc-btn.outline:hover{background:var(--surface2)}
+.pc-btn.filled{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(26,63,160,.25)}
+.pc-btn.filled:hover{background:#1535a0}
+
+/* ---- TAB PANES ---- */
+.pane{display:none}.pane.on{display:block}
+
+
+.header-nav{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.header-link{
+  font-size:14px;font-weight:500;color:var(--text);text-decoration:none;
+  padding:.35rem .15rem;border-bottom:1.5px solid transparent;transition:all .15s;
+}
+.header-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.site-section{
+  max-width:1080px;margin:0 auto;padding:0 1.5rem 4rem;
+}
+.info-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.75rem 2rem;box-shadow:var(--shadow);
+}
+.contact-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1rem;
+}
+.contact-box{
+  background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;
+}
+.footer{
+  border-top:1px solid var(--border);background:var(--surface);margin-top:2rem;
+}
+.footer-inner{
+  max-width:1080px;margin:0 auto;padding:1.35rem 1.5rem 2rem;
+}
+.footer-top{
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.footer-links{
+  display:flex;gap:1rem;flex-wrap:wrap;align-items:center;
+}
+.footer-link{
+  font-size:13px;color:var(--muted);text-decoration:none;border:none;background:none;cursor:pointer;
+  font-family:inherit;padding:0;
+}
+.footer-link:hover{color:var(--text)}
+.footer-note{
+  margin-top:.85rem;font-size:12.5px;color:var(--muted);line-height:1.6;
+}
+.legal-modal{
+  position:fixed;inset:0;background:rgba(24,23,15,.45);z-index:1001;
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.legal-modal.show{display:flex}
+.legal-panel{
+  width:min(760px,100%);max-height:min(86vh,900px);overflow:auto;
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  box-shadow:0 16px 50px rgba(0,0,0,.18);padding:1.5rem;
+}
+.legal-panel h3{font-size:24px;line-height:1.1;margin-bottom:.5rem}
+.legal-panel h4{font-size:15px;margin:1.1rem 0 .35rem;color:var(--text)}
+.legal-panel p,.legal-panel li{font-size:14px;color:var(--muted);line-height:1.65}
+.legal-panel ul{padding-left:1.1rem}
+.legal-panel strong{color:var(--text)}
+.legal-warning{
+  background:#fef3c7;border:1px solid #f0c674;border-radius:9px;
+  padding:.85rem 1.1rem;margin:.5rem 0 1.25rem;font-size:13.5px;color:#78350f;line-height:1.55;
+}
+.legal-warning strong{color:#451a03}
+.legal-placeholder{
+  display:inline-block;background:#fef3c7;color:#78350f;
+  padding:.05rem .35rem;border-radius:4px;font-family:monospace;font-size:.92em;
+  border:1px dashed #d4a017;
+}
+.legal-tabs{
+  display:flex;gap:.25rem;flex-wrap:wrap;margin:0 0 1.25rem;
+  border-bottom:1px solid var(--border);padding-bottom:.2rem;
+}
+.legal-tab{
+  padding:.45rem .85rem;font-size:13px;font-weight:500;color:var(--muted);
+  cursor:pointer;border-radius:8px 8px 0 0;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .15s;background:none;border-left:none;border-right:none;border-top:none;
+  font-family:inherit;
+}
+.legal-tab:hover{color:var(--text);background:var(--surface2)}
+.legal-tab.on{color:var(--text);border-bottom-color:var(--text);font-weight:600}
+
+/* ---- BETA / WAITLIST COMPONENTS ---- */
+.beta-banner{
+  background:linear-gradient(90deg,#eef2fc 0%,#e7edfb 100%);
+  border-bottom:1px solid #c4d3f5;color:#1a3fa0;
+  padding:.5rem 1rem;font-size:12.5px;text-align:center;
+  position:relative;z-index:201;
+}
+.beta-banner strong{color:#0b276b}
+
+.waitlist-card{
+  background:linear-gradient(180deg,var(--surface) 0%,#fafaf6 100%);
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;margin-top:1rem;
+}
+.waitlist-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.waitlist-badge{
+  display:inline-block;background:var(--accent-bg);color:var(--accent);
+  font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:6px;border:1px solid #c4d3f5;
+}
+.waitlist-title{font-size:17px;font-weight:600;line-height:1.2}
+.waitlist-desc{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:1rem}
+.waitlist-form{display:flex;gap:.5rem;flex-wrap:wrap}
+.waitlist-form input[type="email"]{
+  flex:1;min-width:200px;border:1.5px solid var(--border);border-radius:9px;
+  padding:.7rem .9rem;font-family:inherit;font-size:14px;background:var(--surface);
+  transition:border-color .18s;
+}
+.waitlist-form input[type="email"]:focus{
+  outline:none;border-color:#6b8ad4;box-shadow:0 0 0 3px rgba(107,138,212,.15)
+}
+.waitlist-success{
+  display:none;background:var(--green-bg);border:1px solid var(--green-bd);
+  color:var(--green);padding:.85rem 1rem;border-radius:9px;
+  font-size:13.5px;line-height:1.5;margin-top:.5rem;
+}
+.waitlist-success.show{display:block}
+.waitlist-success strong{color:#0f4a2c}
+
+.waitlist-count{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:12px;color:var(--muted);margin-top:.75rem;
+}
+.waitlist-count .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite}
+
+.pc-price-preview{
+  position:relative;
+}
+.pc-price-preview::after{
+  content:'geplant';
+  position:absolute;top:-8px;right:-8px;
+  font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  background:#fef3c7;color:#78350f;padding:.15rem .4rem;border-radius:5px;
+  border:1px solid #f0c674;
+}
+
+.demo-preview-hint{
+  background:var(--accent-bg);border:1px solid #c4d3f5;
+  border-radius:9px;padding:.7rem .9rem;margin-bottom:1rem;
+  font-size:12.5px;color:var(--accent);line-height:1.5;
+}
+/* ============================================================
+   RESPONSIVE STYLES
+   ============================================================ */
+
+/* Hamburger styles */
+.hamburger-btn{
+  display:none;
+  flex-direction:column;justify-content:center;align-items:center;
+  width:42px;height:42px;border:1.5px solid var(--border);
+  border-radius:9px;background:none;cursor:pointer;
+  gap:5px;flex-shrink:0;padding:0;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.hamburger-btn span{
+  display:block;width:18px;height:2px;background:var(--text);
+  border-radius:2px;transition:all .2s ease;
+}
+.hamburger-btn.is-open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger-btn.is-open span:nth-child(2){opacity:0}
+.hamburger-btn.is-open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile nav drawer */
+.mob-nav{
+  display:none;
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:var(--surface);z-index:400;
+  flex-direction:column;
+  padding:70px 1.5rem 2rem;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.mob-nav.is-open{display:flex}
+.mob-nav-link{
+  font-size:18px;font-weight:500;color:var(--text);
+  text-decoration:none;padding:1rem .25rem;
+  border-bottom:1px solid var(--border);
+  display:block;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-nav-link:last-of-type{border-bottom:none}
+.mob-nav-close{
+  margin-top:1.5rem;
+  display:block;width:100%;padding:.85rem;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:10px;font-family:inherit;font-size:15px;font-weight:500;
+  color:var(--text);cursor:pointer;
+  touch-action:manipulation;
+}
+.mob-nav-reset{
+  margin-top:.5rem;
+  display:block;width:100%;padding:.7rem;
+  background:none;border:1.5px solid var(--border);
+  border-radius:10px;font-family:inherit;font-size:13px;
+  color:var(--muted);cursor:pointer;
+  touch-action:manipulation;
+}
+
+/* Tablet */
+@media(max-width:900px){
+  .hdr-inner{padding:0 1rem}
+  .header-nav{gap:.5rem}
+  .header-link{font-size:13px}
+  .site-section{padding:0 1rem 3rem}
+  .trust-bar{grid-template-columns:repeat(2,1fr)}
+  .reviews-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Show hamburger, hide desktop nav */
+@media(max-width:768px){
+  .header-nav{display:none !important}
+  .badge-pro{display:none}
+  .hdr-right > .btn{display:none}
+  .hamburger-btn{display:flex}
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .hdr-inner{height:56px;padding:0 .85rem}
+  .wrap{padding:1rem .85rem 6rem}
+  .hero{padding:1.5rem 0 1rem;text-align:center}
+  .hero h1{font-size:clamp(1.6rem,7vw,2.1rem);line-height:1.12}
+  .hero p{font-size:14.5px;max-width:100%}
+  .beta-banner{font-size:11.5px;padding:.4rem .75rem}
+  .urgency-banner{font-size:12.5px;padding:.7rem .85rem;text-align:center}
+  .trust-bar{grid-template-columns:repeat(2,1fr);gap:.5rem;margin:.75rem auto 1.25rem}
+  .trust-item{padding:.65rem .75rem}
+  .trust-val{font-size:16px}
+  .steps{margin:1.25rem 0 1.75rem;justify-content:center}
+  .step-label{display:none}
+  .step-line{width:20px}
+  .card{padding:1.1rem .9rem;border-radius:12px}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr}
+  .fin-prev{grid-template-columns:repeat(2,1fr);gap:.65rem;padding:.85rem}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .fin-grid{grid-template-columns:repeat(2,1fr)}
+  .sz-g{grid-template-columns:1fr 1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .inp-wrap input[type="number"],
+  .inp-wrap input[type="text"],
+  .inp-wrap select{font-size:16px;height:48px}
+  .btn{padding:.7rem 1.2rem;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .btn-big{padding:.85rem 1.5rem;font-size:15px}
+  .sec-nav{flex-direction:column;align-items:stretch;gap:.6rem;margin-top:1.5rem}
+  .sec-nav .btn{width:100%;justify-content:center;min-height:48px}
+  .sec-nav > div:empty{display:none}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap}
+  .tab{padding:.55rem .85rem;font-size:13px;white-space:nowrap}
+  .amp-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .amp-tbl{min-width:440px}
+  .chk-row{grid-template-columns:1fr;gap:.3rem}
+  .chk-v{text-align:left}
+  .verdict{padding:1.5rem 1rem}
+  .verdict-title{font-size:1.6rem}
+  .pdf-panel{grid-template-columns:1fr}
+  .pdf-preview-side{border-radius:14px 14px 0 0;padding:1rem}
+  .pdf-content-side{padding:1.1rem}
+  .pdf-actions{flex-direction:column}
+  .pdf-actions .btn{width:100%;justify-content:center}
+  .checkout-panel{padding:1.1rem;border-radius:14px}
+  .legal-panel{padding:1.1rem;border-radius:14px}
+  .sticky-cta{flex-direction:column;padding:.65rem .85rem;gap:.4rem;text-align:center}
+  .waitlist-form{flex-direction:column}
+  .waitlist-form input[type="email"]{min-width:0;width:100%}
+  .footer-top{flex-direction:column;align-items:flex-start;gap:.65rem}
+  .footer-inner{padding:1.1rem .85rem 2rem}
+  .site-section{padding:0 .85rem 3rem}
+}
+
+/* ---- UX / VALIDIERUNG ---- */
+.mini-bar{
+  display:flex;justify-content:center;gap:.65rem;flex-wrap:wrap;
+  margin:-.4rem 0 1.25rem;
+}
+.mini-pill{
+  font-size:12px;color:var(--muted);background:var(--surface);
+  border:1px solid var(--border);padding:.35rem .75rem;border-radius:999px;
+}
+.page-status{
+  display:none;margin:0 auto 1.4rem;max-width:760px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.8rem 1rem;font-size:13px;color:var(--muted);
+}
+.page-status.show{display:block}
+.page-status strong{color:var(--text)}
+.inp-wrap.is-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(184,50,40,.10)}
+.field-error{
+  min-height:16px;font-size:12px;color:var(--red);line-height:1.35;
+}
+.field-help{
+  font-size:11.5px;color:var(--hint);line-height:1.4;margin-top:.05rem;
+}
+.top-actions{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin-bottom:1rem;flex-wrap:wrap;
+}
+.inline-note{
+  font-size:12.5px;color:var(--muted);
+}
+.inline-note strong{color:var(--text)}
+.success-toast{
+  position:fixed;right:18px;bottom:18px;z-index:999;
+  background:var(--text);color:#fff;padding:.8rem 1rem;border-radius:12px;
+  box-shadow:0 8px 28px rgba(0,0,0,.16);font-size:13px;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:all .22s ease;
+}
+.success-toast.show{opacity:1;transform:translateY(0)}
+.checkout-modal{
+  position:fixed;inset:0;background:rgba(24,23,15,.45);
+  z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.checkout-modal.show{display:flex}
+.checkout-panel{
+  width:min(480px,100%);background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;box-shadow:0 16px 50px rgba(0,0,0,.18);padding:1.5rem;
+}
+.checkout-panel h3{
+  font-size:22px;line-height:1.15;letter-spacing:-.02em;margin-bottom:.45rem;
+}
+.checkout-panel p{font-size:14px;color:var(--muted);margin-bottom:1rem}
+.checkout-list{margin:1rem 0}
+.checkout-row{
+  display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--surface2);
+  font-size:14px;
+}
+.checkout-row:last-child{border-bottom:none}
+.checkout-row strong{color:var(--text)}
+@media(max-width:600px){
+  .mini-bar{margin-top:-.2rem}
+}
+
+
+
+.free-lock-overlay{
+  position:relative;margin-top:1rem;
+}
+.free-lock-blur{
+  filter:blur(4px);opacity:.5;pointer-events:none;user-select:none;
+}
+.free-lock-card{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;
+}
+.free-lock-inner{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 8px 32px rgba(0,0,0,.1);padding:1.25rem 1.4rem;max-width:360px;width:100%;
+  text-align:center;
+}
+.free-lock-inner h4{font-size:18px;line-height:1.2;margin-bottom:.35rem}
+.free-lock-inner p{font-size:13.5px;color:var(--muted);line-height:1.5}
+.free-preview-note{
+  margin-top:.85rem;font-size:12.5px;color:var(--muted);
+}
+
+.pro-chip{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:.28rem .6rem;border-radius:999px;background:var(--surface2);color:var(--muted);
+  border:1px solid var(--border);
+}
+.lock-note{
+  margin-top:.8rem;font-size:12.5px;color:var(--muted);
+}
+.pro-hidden{display:none !important;}
+
+/* ---- PRINT / PDF ---- */
+@media print {
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+  .hdr,.steps,.sec-nav,.top-actions,.pg:not(.on),.site-section,footer,.legal-modal,
+  .checkout-modal,.toast,.mini-bar,#toast,.no-print,
+  .free-lock-overlay,.paywall-overlay,.paywall-box,
+  #pg-1,#pg-2,#pg-3{display:none !important}
+  body{background:#fff !important;font-size:12px}
+  .wrap{max-width:100%;padding:.5rem}
+  .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;margin-bottom:.75rem}
+  .verdict{page-break-inside:avoid}
+  .kpi-grid{grid-template-columns:repeat(4,1fr) !important}
+  .fin-grid{grid-template-columns:repeat(4,1fr) !important}
+  .tabs{display:none}
+  .pane{display:block !important}
+  .pro-only-pane{display:block !important}
+  .pro-only{display:inline-flex !important}
+  .pdf-header{display:flex !important}
+  a[href]:after{content:none}
+  .page-status{display:none}
+}
+
+/* =============================================================
+   NEUE UMSATZ-OPTIMIERTE KOMPONENTEN
+   ============================================================= */
+
+/* ---- HOME-ONLY WRAPPER (Trust-Bar + Urgency nur auf Seite 1) ---- */
+body.not-home .home-only{display:none !important;}
+
+/* ---- TRUST BAR (unter Hero) ---- */
+.trust-bar{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:.75rem;margin:1rem auto 2rem;max-width:900px;padding:0 .5rem;
+}
+.trust-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.85rem 1rem;text-align:center;
+  box-shadow:var(--shadow);
+}
+.trust-ico{font-size:20px;display:block;margin-bottom:.2rem}
+.trust-val{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.trust-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem}
+
+/* ---- LAUNCH / URGENCY BANNER ---- */
+.urgency-banner{
+  background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);
+  border:1px solid #f0c674;border-radius:var(--radius-sm);
+  padding:.85rem 1.15rem;margin:0 auto 1.5rem;max-width:900px;
+  display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;justify-content:center;
+  font-size:13.5px;color:#78350f;
+}
+.urgency-banner strong{color:#451a03}
+.urgency-banner .u-dot{
+  width:8px;height:8px;border-radius:50%;background:#dc2626;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ---- 3-TIER PRICING UPGRADES ---- */
+.pricing-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:640px;margin:1.5rem auto 0}
+.pricing-card.premium{
+  border-color:#c9a96e;
+  background:linear-gradient(180deg,#fffdf7 0%,var(--surface) 100%);
+  box-shadow:0 0 0 1px #c9a96e,0 8px 28px rgba(201,169,110,.15);
+}
+.pricing-card.premium .pc-tag{background:linear-gradient(135deg,#c9a96e,#9a7a3d)}
+.pc-old-price{
+  font-size:16px;color:var(--hint);text-decoration:line-through;
+  margin-right:.5rem;font-weight:500;
+}
+.pc-save{
+  display:inline-block;font-size:11px;font-weight:700;
+  background:var(--green-bg);color:var(--green);
+  padding:.15rem .5rem;border-radius:6px;margin-left:.35rem;letter-spacing:.03em;
+  vertical-align:middle;
+}
+.pc-guarantee{
+  display:flex;align-items:center;gap:.4rem;justify-content:center;
+  font-size:11.5px;color:var(--muted);margin-top:.7rem;
+  padding:.4rem;background:var(--surface2);border-radius:8px;
+}
+
+/* ---- REVIEWS ---- */
+.reviews-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;
+}
+.stars-big{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.stars-big .stars{font-size:22px;letter-spacing:.05em;color:#f59e0b}
+.stars-big .score{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.stars-big .count{font-size:13px;color:var(--muted)}
+
+.reviews-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1rem;margin-top:1rem;
+}
+.review-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.1rem 1.2rem;
+  display:flex;flex-direction:column;gap:.55rem;
+  transition:all .18s ease;
+}
+.review-card:hover{border-color:#d4cfc0;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.review-top{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.review-author{display:flex;align-items:center;gap:.6rem}
+.review-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;flex-shrink:0;
+}
+.review-name{font-size:14px;font-weight:600;line-height:1.1}
+.review-date{font-size:11px;color:var(--hint);margin-top:.1rem}
+.review-stars{color:#f59e0b;font-size:13px;letter-spacing:.1em}
+.review-text{font-size:13.5px;line-height:1.55;color:var(--text)}
+.review-verified{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:10.5px;font-weight:600;color:var(--green);
+  letter-spacing:.03em;text-transform:uppercase;margin-top:.2rem;
+}
+
+.review-form{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:1.25rem;margin-top:1.5rem;
+}
+.review-form h4{font-size:15px;margin-bottom:.85rem}
+.star-picker{display:flex;gap:.25rem;margin:.3rem 0 .85rem;user-select:none}
+.star-picker span{
+  font-size:26px;cursor:pointer;color:#d4cfc0;
+  transition:transform .12s ease,color .12s ease;
+}
+.star-picker span:hover{transform:scale(1.15)}
+.star-picker span.active{color:#f59e0b}
+.review-form textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:9px;
+  padding:.7rem .85rem;font-family:inherit;font-size:14px;
+  background:var(--surface);resize:vertical;min-height:80px;
+  transition:border-color .18s;
+}
+.review-form textarea:focus{outline:none;border-color:#6b8ad4;box-shadow:0 0 0 3px rgba(107,138,212,.15)}
+.review-form input[type="text"]{
+  width:100%;border:1.5px solid var(--border);border-radius:9px;
+  padding:.55rem .85rem;font-family:inherit;font-size:14px;
+  background:var(--surface);margin-bottom:.65rem;
+}
+.review-form input[type="text"]:focus{outline:none;border-color:#6b8ad4;box-shadow:0 0 0 3px rgba(107,138,212,.15)}
+
+/* ---- STICKY CONVERSION CTA ---- */
+.sticky-cta{
+  position:fixed;bottom:0;left:0;right:0;z-index:150;
+  background:var(--surface);border-top:1px solid var(--border);
+  box-shadow:0 -4px 20px rgba(0,0,0,.06);padding:.7rem 1rem;
+  display:none;align-items:center;justify-content:space-between;gap:1rem;
+  animation:slideUp .3s ease;
+}
+.sticky-cta.show{display:flex}
+.sticky-cta .scta-text{font-size:13px;line-height:1.3}
+.sticky-cta .scta-text strong{display:block;font-size:14px}
+.sticky-cta .scta-text small{color:var(--muted)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* ---- PDF EXPORT MODAL (das schöne Overlay) ---- */
+.pdf-modal{
+  position:fixed;inset:0;background:rgba(24,23,15,.55);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  z-index:1100;display:none;align-items:center;justify-content:center;padding:1rem;
+  animation:fadeIn .2s ease;
+}
+.pdf-modal.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.pdf-panel{
+  width:min(720px,100%);max-height:92vh;overflow-y:auto;
+  background:var(--surface);border-radius:20px;
+  box-shadow:0 24px 60px rgba(0,0,0,.25);
+  display:grid;grid-template-columns:1.3fr 1fr;gap:0;
+  animation:pdfModalIn .3s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes pdfModalIn{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.pdf-preview-side{
+  background:linear-gradient(180deg,#f7f5ef 0%,#efece3 100%);
+  padding:1.5rem;border-radius:20px 0 0 20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.pdf-preview-side::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:200px;height:200px;background:radial-gradient(circle,rgba(26,63,160,.08),transparent 70%);
+  border-radius:50%;
+}
+.pdf-mini{
+  width:100%;max-width:200px;aspect-ratio:0.707;
+  background:#fff;border-radius:6px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04);
+  padding:14px 12px;font-size:6.5px;line-height:1.3;
+  position:relative;transform:rotate(-2deg);
+  transition:transform .3s ease;
+}
+.pdf-mini:hover{transform:rotate(0deg) scale(1.02)}
+.pdf-mini-head{border-bottom:1px solid #18170f;padding-bottom:4px;margin-bottom:6px}
+.pdf-mini-title{font-size:8px;font-weight:700;color:#18170f}
+.pdf-mini-sub{font-size:5px;color:#6a6860;margin-top:1px}
+.pdf-mini-box{background:#f0efe9;border-radius:3px;padding:5px 6px;margin-bottom:4px}
+.pdf-mini-box.verdict{background:#eaf7f0;text-align:center;padding:7px 6px}
+.pdf-mini-box.verdict strong{font-size:9px;color:#1c7a4b;display:block}
+.pdf-mini-kpis{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px}
+.pdf-mini-kpi{background:#f0efe9;padding:3px 4px;border-radius:2px}
+.pdf-mini-kpi b{display:block;font-size:7px;color:#18170f}
+.pdf-mini-kpi span{font-size:4.5px;color:#6a6860}
+.pdf-mini-footer{position:absolute;bottom:8px;left:12px;right:12px;
+  border-top:1px solid #e0ddd4;padding-top:3px;
+  font-size:4px;color:#9c9a91;display:flex;justify-content:space-between}
+
+.pdf-preview-label{
+  margin-top:1rem;font-size:12px;color:var(--muted);
+  text-align:center;letter-spacing:.05em;
+}
+
+.pdf-content-side{padding:1.75rem 1.85rem;display:flex;flex-direction:column}
+.pdf-content-side h3{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:24px;line-height:1.15;margin-bottom:.25rem;
+}
+.pdf-content-side .pdf-sub{font-size:13.5px;color:var(--muted);margin-bottom:1.1rem}
+
+.pdf-options{margin-bottom:1rem}
+.pdf-option{
+  display:flex;align-items:flex-start;gap:.6rem;padding:.65rem .8rem;
+  background:var(--surface2);border-radius:9px;margin-bottom:.4rem;
+  cursor:pointer;transition:all .15s ease;border:1.5px solid transparent;
+}
+.pdf-option:hover{background:var(--bg)}
+.pdf-option input[type="checkbox"]{margin-top:2px;accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.pdf-option-label{flex:1}
+.pdf-option-label b{display:block;font-size:13.5px;font-weight:600;margin-bottom:.1rem}
+.pdf-option-label small{font-size:11.5px;color:var(--muted);line-height:1.4}
+
+.pdf-locked{
+  display:flex;align-items:center;gap:.5rem;padding:.75rem;
+  background:linear-gradient(90deg,#fef3c7,#fde68a);
+  border-radius:9px;margin-bottom:1rem;font-size:12.5px;color:#78350f;
+}
+.pdf-actions{display:flex;gap:.5rem;margin-top:auto;flex-wrap:wrap}
+.pdf-close-btn{
+  position:absolute;top:12px;right:14px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.05);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--muted);transition:all .15s;
+}
+.pdf-close-btn:hover{background:rgba(0,0,0,.1);color:var(--text)}
+
+@media(max-width:720px){
+  .pdf-panel{grid-template-columns:1fr}
+  .pdf-preview-side{border-radius:20px 20px 0 0;padding:1rem}
+  .pdf-mini{max-width:150px}
+}
+
+/* ---- FAQ ---- */
+.faq-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:.55rem;overflow:hidden;
+}
+.faq-q{
+  padding:.85rem 1.1rem;cursor:pointer;font-size:14.5px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:.5rem;
+  transition:background .12s;
+}
+.faq-q:hover{background:var(--surface2)}
+.faq-q .faq-toggle{font-size:20px;color:var(--hint);transition:transform .2s}
+.faq-item.open .faq-toggle{transform:rotate(45deg);color:var(--accent)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height .25s ease,padding .25s ease;
+  padding:0 1.1rem;font-size:13.5px;color:var(--muted);line-height:1.6;
+}
+.faq-item.open .faq-a{max-height:400px;padding:0 1.1rem 1rem}
+
+.ki-option{
+  display:grid;grid-template-columns:2.2rem 1fr;gap:.75rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:.85rem 1rem;align-items:start;
+}
+.ki-option-icon{
+  width:2.2rem;height:2.2rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.ki-option-icon.blau{background:#EBF3FB;color:#378ADD}
+.ki-option-icon.gruen{background:#E8F8F1;color:#1D9E75}
+.ki-option-icon.amber{background:#FEF3E2;color:#EF9F27}
+.ki-option-icon.grau{background:var(--surface2);color:var(--muted)}
+.ki-option-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.ki-option-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.ki-option-body{font-size:13px;color:var(--muted);line-height:1.55}
+.ki-option-tag{display:inline-block;margin-top:.45rem;font-size:11.5px;font-weight:600;padding:.2rem .55rem;border-radius:5px}
+.ki-option-tag.blau{background:#EBF3FB;color:#378ADD}
+.ki-option-tag.gruen{background:#E8F8F1;color:#1D9E75}
+.ki-option-tag.amber{background:#FEF3E2;color:#EF9F27}
+.ki-option-tag.grau{background:var(--surface2);color:var(--muted)}
+.ki-scenario-card{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.1rem;background:var(--surface);
+}
+.ki-worst{border-top:3px solid #E24B4A}
+.ki-stress{border-top:3px solid #EF9F27}
+.ki-base{border-top:3px solid #378ADD}
+.ki-upside{border-top:3px solid #1D9E75}
+.ki-best{border-top:3px solid #0a8a5a}
+.ki-scenario-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.ki-scenario-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.3}
+.ki-scenario-body{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:.65rem}
+.ki-scenario-metric{font-size:12px;font-weight:600;padding:.3rem .6rem;border-radius:6px;display:inline-block}
+.ki-worst .ki-scenario-metric{background:#fef2f2;color:#E24B4A}
+.ki-stress .ki-scenario-metric{background:#fef9ee;color:#EF9F27}
+.ki-base .ki-scenario-metric{background:#eff6ff;color:#378ADD}
+.ki-upside .ki-scenario-metric{background:#f0fdf4;color:#1D9E75}
+.ki-best .ki-scenario-metric{background:#e6f9f2;color:#0a8a5a}
+.ki-spinner{
+  width:36px;height:36px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-color-scheme:dark){
+  .ki-worst .ki-scenario-metric{background:#2d1515;color:#f87171}
+  .ki-stress .ki-scenario-metric{background:#2d2010;color:#fbbf24}
+  .ki-base .ki-scenario-metric{background:#172033;color:#60a5fa}
+  .ki-upside .ki-scenario-metric{background:#0f2318;color:#4ade80}
+  .ki-best .ki-scenario-metric{background:#0a1f16;color:#34d399}
+}
+</style>
+</head>
+<body>
+
+<!-- PDF HEADER (nur beim Drucken sichtbar) -->
+<div class="pdf-header" style="display:none;justify-content:space-between;align-items:center;border-bottom:2px solid #18170f;padding-bottom:.75rem;margin-bottom:1rem">
+  <div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-.02em">ImmoDeal – Immobilienanalyse</div>
+    <div style="font-size:12px;color:#6a6860;margin-top:.2rem" id="pdf-meta"></div>
+  </div>
+  <div style="text-align:right;font-size:11px;color:#9c9a91">
+    <div>Erstellt am <span id="pdf-date"></span></div>
+    <div style="margin-top:.2rem">Keine Anlageberatung – nur zur Orientierung</div>
+  </div>
+</div>
+
+<!-- BETA TEST BANNER -->
+<div class="beta-banner">
+  🧪 <strong>Beta</strong> · Alle Funktionen kostenlos freigeschaltet · Feedback willkommen!
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="logo" href="#">
+      <div class="logo-mark">ID</div>
+      <div>
+        <div class="logo-name">ImmoDeal</div>
+        <div class="logo-tag">Analyse-Tool</div>
+      </div>
+    </a>
+    <div class="hdr-right">
+      <nav class="header-nav" aria-label="Hauptnavigation">
+        <a class="header-link" href="#" onclick="goTo(1); return false;">Analyse</a>
+        <a class="header-link" href="#preise" onclick="openPricing(); return false;">Preise</a>
+        <a class="header-link" href="#rezensionen" onclick="document.getElementById('rezensionen')?.scrollIntoView({behavior:'smooth'}); return false;">Rezensionen</a>
+        <a class="header-link" href="#faq" onclick="document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); return false;">FAQ</a>
+        <a class="header-link" href="#kontakt" onclick="scrollToContact(); return false;">Kontakt</a>
+      </nav>
+      <span class="badge-pro" id="header-badge">Beta · Kostenlos</span>
+      <button class="btn btn-secondary" style="font-size:13px;padding:.45rem 1rem" onclick="resetAll()">Neu starten</button>
+      <button class="hamburger-btn" id="mob-menu-btn" aria-label="Menü öffnen" onclick="toggleMobNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAVIGATION -->
+<div class="mob-nav" id="mob-nav" role="dialog" aria-modal="true" aria-label="Navigation">
+  <a class="mob-nav-link" href="#" onclick="goTo(1);closeMobNav();return false;">📊 Analyse starten</a>
+  <a class="mob-nav-link" href="#" onclick="openPricing();closeMobNav();return false;">💰 Preise</a>
+  <a class="mob-nav-link" href="#" onclick="document.getElementById('rezensionen')?.scrollIntoView({behavior:'smooth'});closeMobNav();return false;">⭐ Rezensionen</a>
+  <a class="mob-nav-link" href="#" onclick="document.getElementById('faq')?.scrollIntoView({behavior:'smooth'});closeMobNav();return false;">❓ FAQ</a>
+  <a class="mob-nav-link" href="#" onclick="scrollToContact();closeMobNav();return false;">✉️ Kontakt</a>
+  <button class="mob-nav-close" onclick="closeMobNav()">✕ Menü schließen</button>
+  <button class="mob-nav-reset" onclick="resetAll()">↩ Neu starten</button>
+</div>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Immobilien analysieren<br>wie ein <em>Profi</em></h1>
+    <p>Kaufpreis, Cashflow, Rendite & Ampel-Empfehlung – sofort berechnet, klar dargestellt. <strong style="color:var(--accent)">Aktuell kostenlos in der Beta.</strong></p>
+  </div>
+
+  <!-- NUR AUF STARTSEITE (Schritt 1) SICHTBAR -->
+  <div class="home-only">
+    <!-- TRUST-BAR mit Sozialbeweis -->
+    <div class="trust-bar">
+      <div class="trust-item">
+        <span class="trust-ico">📊</span>
+        <div class="trust-val">14 Kennzahlen</div>
+        <div class="trust-lbl">Werden berechnet</div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-ico">🎯</span>
+        <div class="trust-val">Klare Empfehlung</div>
+        <div class="trust-lbl">Kaufen / Nicht kaufen</div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-ico">🔒</span>
+        <div class="trust-val">100 %</div>
+        <div class="trust-lbl">Ohne Registrierung</div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-ico">⚡</span>
+        <div class="trust-val">&lt; 3 Min</div>
+        <div class="trust-lbl">Zur Empfehlung</div>
+      </div>
+    </div>
+
+    <!-- BETA INFO BANNER -->
+    <div class="urgency-banner" id="urgency-banner" style="background:linear-gradient(135deg,#eef2fc 0%,#dbe4f8 100%);border-color:#c4d3f5;color:var(--text)">
+      <span>🧪 <strong>Beta-Phase:</strong> Alle Funktionen sind aktuell kostenlos nutzbar. Feedback ist herzlich willkommen!</span>
+    </div>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps" id="steps-bar">
+    <div class="step-item" id="si-1">
+      <div class="step-btn" onclick="goTo(1)">
+        <div class="step-num">1</div>
+        <div class="step-label">Objekt</div>
+      </div>
+    </div>
+    <div class="step-line" id="sl-1"></div>
+    <div class="step-item" id="si-2">
+      <div class="step-btn" onclick="goTo(2)">
+        <div class="step-num">2</div>
+        <div class="step-label">Kosten & Miete</div>
+      </div>
+    </div>
+    <div class="step-line" id="sl-2"></div>
+    <div class="step-item" id="si-3">
+      <div class="step-btn" onclick="goTo(3)">
+        <div class="step-num">3</div>
+        <div class="step-label">Finanzierung</div>
+      </div>
+    </div>
+    <div class="step-line" id="sl-3"></div>
+    <div class="step-item" id="si-4">
+      <div class="step-btn" onclick="goTo(4)">
+        <div class="step-num">4</div>
+        <div class="step-label">Ergebnis</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-status" id="page-status"></div>
+
+  <!-- =================== PAGE 1 =================== -->
+  <div class="pg on" id="pg-1">
+    <div class="card">
+      <div class="card-head">Objektdaten</div>
+      <div class="grid2">
+        <div class="field">
+          <label class="field-label">Kaufpreis</label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_kaufpreis" value="220000" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Wohnfläche</label>
+          <div class="inp-wrap">
+            <input type="number" id="f_wfl" value="68" min="1">
+            <div class="inp-unit right">m²</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Baujahr</label>
+          <div class="inp-wrap">
+            <input type="number" id="f_baujahr" value="2005" min="1800" max="2025">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Objektart</label>
+          <div class="inp-wrap">
+            <select id="f_objektart">
+              <option value="Wohnung">Wohnung</option>
+              <option value="Haus">Haus</option>
+              <option value="Mehrfamilienhaus">Mehrfamilienhaus</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Ort / Lage</label>
+          <div class="inp-wrap">
+            <input type="text" id="f_ort" value="Köln / Ehrenfeld" placeholder="z.B. München / Schwabing">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Zustand
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Baulicher Zustand der Immobilie. Fließt in den Gesamtscore ein.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <select id="f_zustand">
+              <option value="2">Sehr gut (Neubau / frisch saniert)</option>
+              <option value="1" selected>Gut (gepflegt, wenig nötig)</option>
+              <option value="0">Mittel (kleinere Renovierungen nötig)</option>
+              <option value="-1">Schlecht (Sanierung notwendig)</option>
+              <option value="-2">Sehr schlecht</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Lagebewertung
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Mikro- und Makrolage. Gute Lage stützt Wertentwicklung. Fließt in den Score ein.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <select id="f_lage">
+              <option value="2">Sehr gut</option>
+              <option value="1" selected>Gut</option>
+              <option value="0">Mittel</option>
+              <option value="-1">Schlecht</option>
+              <option value="-2">Sehr schlecht</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Markttyp
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">A-Stadt = Top 7 (München, Hamburg, Berlin, Frankfurt, Köln, Düsseldorf, Stuttgart). B-Stadt = Großstädte ab 100.000 Einw. C/D = Kleinstädte & ländlich. Beeinflusst die Bewertungsschwellen.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <select id="f_markttyp">
+              <option value="A">A-Stadt (Top 7 Metropole)</option>
+              <option value="B" selected>B-Stadt (Großstadt / Umland)</option>
+              <option value="C">C/D-Stadt (Kleinstadt / ländlich)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"><span>Kaufnebenkosten</span></div>
+      <div class="grid3">
+        <div class="field">
+          <label class="field-label">
+            Grunderwerbsteuer
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Je nach Bundesland 3,5–6,5 %. Standard: 6,5 %.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_gest" value="6.5" step="0.5" min="0" max="10">
+            <div class="inp-unit right">%</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Notar & Grundbuch
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Typisch ca. 2 % des Kaufpreises.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_notar" value="2.0" step="0.1" min="0">
+            <div class="inp-unit right">%</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Maklerprovision
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Falls vorhanden. Typisch 0–3,57 %. Standard: 3 %.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_makler" value="3.0" step="0.5" min="0">
+            <div class="inp-unit right">%</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Sonstige Nebenkosten</label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_snk" value="1500" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="sec-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="goTo(2)">Weiter &rarr; Kosten & Miete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== PAGE 2 =================== -->
+  <div class="pg" id="pg-2">
+    <div class="card">
+      <div class="card-head">Mieteinnahmen</div>
+      <div class="grid2">
+        <div class="field">
+          <label class="field-label">
+            Aktuelle Kaltmiete (mtl.)
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Tatsächlich erzielte Nettokaltmiete heute.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_kaltmiete" value="950" min="0">
+            <div class="inp-unit right">/Mon.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Marktmiete (mtl.)
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Laut aktuellem Marktumfeld erzielbar. Zeigt Mietpotenzial.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_marktmiete" value="1050" min="0">
+            <div class="inp-unit right">/Mon.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Leerstandsquote
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Erwarteter Leerstand als % der Jahreskaltmiete. Standard: 2–3 %.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_leerstand" value="2" step="0.5" min="0" max="100">
+            <div class="inp-unit right">%</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Mögliche Mieterhöhung (mtl.)
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Potenzielle Erhöhung ggü. aktueller Miete. Wird im Potenzial-Cashflow angezeigt.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_mietpot" value="100" min="0">
+            <div class="inp-unit right">/Mon.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"><span>Laufende Kosten</span></div>
+      <div class="grid3">
+        <div class="field">
+          <label class="field-label">
+            Nicht umlagefähige Kosten
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Nicht auf den Mieter übertragbare Kosten pro Monat. Standard: 30–120 €.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_numlag" value="120" min="0">
+            <div class="inp-unit right">/Mon.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Hausverwaltung
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Monatliche Verwaltungskosten. Standard: 20–30 €.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_hv" value="20" min="0">
+            <div class="inp-unit right">/Mon.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Instandhaltung
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Pro m² und Jahr. Richtwert: 8–15 €/m²/Jahr. Standard: 12 €.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_instand" value="12" step="0.5" min="0">
+            <div class="inp-unit right">/m²/J.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Sonderumlage / Einmalkosten</label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_sonderumlage" value="0" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Renovierung / CAPEX
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Einmalige Investition nach Kauf (z.B. Modernisierung).</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_capex" value="0" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="sec-nav">
+        <button class="btn btn-secondary" onclick="goTo(1)">&larr; Zurück</button>
+        <button class="btn btn-primary" onclick="goTo(3)">Weiter &rarr; Finanzierung</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== PAGE 3 =================== -->
+  <div class="pg" id="pg-3">
+    <div class="card">
+      <div class="card-head">Finanzierungsstruktur</div>
+      <div class="grid2">
+        <div class="field">
+          <label class="field-label">
+            Eigenkapital
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Ihr Eigenkapitaleinsatz. Empfohlen: mind. 20–25 % der Gesamtinvestition.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <div class="inp-unit">€</div>
+            <input type="number" id="f_ek" value="20000" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Sollzins p.a.
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Zinssatz für Ihr Darlehen. Aktuell ca. 3,5–4,5 %.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_zins" value="3.6" step="0.1" min="0" max="20">
+            <div class="inp-unit right">% p.a.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            Anfangstilgung p.a.
+            <span class="tip">
+              <span class="tip-ico">?</span>
+              <span class="tip-box">Tilgungsrate p.a. Standard: 2 %. Höher = schnellere Entschuldung.</span>
+            </span>
+          </label>
+          <div class="inp-wrap">
+            <input type="number" id="f_tilgung" value="2.0" step="0.1" min="0" max="15">
+            <div class="inp-unit right">% p.a.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Zinsbindung / Laufzeit</label>
+          <div class="inp-wrap">
+            <input type="number" id="f_zinsbind" value="15" min="1" max="30">
+            <div class="inp-unit right">Jahre</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE PREVIEW -->
+      <div class="fin-prev" id="fin-prev">
+        <div class="fp-item"><div class="fp-label">Darlehensbetrag</div><div class="fp-val" id="fp-dar">–</div></div>
+        <div class="fp-item"><div class="fp-label">Monatl. Rate</div><div class="fp-val" id="fp-rate">–</div></div>
+        <div class="fp-item"><div class="fp-label">EK-Quote</div><div class="fp-val" id="fp-eq">–</div></div>
+        <div class="fp-item"><div class="fp-label">LTV</div><div class="fp-val" id="fp-ltv">–</div></div>
+      </div>
+
+      <div class="sec-nav">
+        <button class="btn btn-secondary" onclick="goTo(2)">&larr; Zurück</button>
+        <button class="btn btn-primary btn-big" onclick="goTo(4)">Analyse berechnen &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== PAGE 4 =================== -->
+  <div class="pg" id="pg-4">
+
+    <div class="top-actions">
+      <div class="inline-note"><strong>Beta:</strong> Alle Funktionen sind aktuell kostenlos freigeschaltet.</div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" type="button" onclick="exportPDF()" id="pdf-btn">⬇ PDF exportieren</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.25rem;background:linear-gradient(180deg,#eef2fc 0%,var(--surface) 100%);border-color:#c4d3f5">
+      <div class="card-head" style="color:var(--accent)">🧪 Beta-Test aktiv</div>
+      <div style="display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div style="font-size:13.5px;color:var(--text);max-width:680px;line-height:1.55">
+          <strong>Alle Funktionen sind während der Beta kostenlos.</strong> Du siehst die vollständige Analyse inkl. Empfehlung, Ampel-Check und Szenarien – ohne Einschränkung.
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <button class="btn btn-primary" type="button" onclick="setProMode(true)">Analyse anzeigen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERDICT -->
+    <div id="verdict-box"></div>
+
+    <!-- SCORE CARD -->
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Gesamtscore</div>
+      <div class="score-wrap">
+        <div class="score-ring" id="sc-ring">
+          <div class="s-num" id="sc-num">–</div>
+          <div class="s-den">/14</div>
+        </div>
+        <div class="score-bar-outer" style="flex:1">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:.3rem" id="sc-desc"></div>
+          <div class="score-bar-track"><div class="score-bar-fill" id="sc-fill"></div></div>
+          <div class="score-legend"><span>0 – Nicht kaufen</span><span>14 – Kaufen</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab on" onclick="showTab('kpi',this)">Kennzahlen</div>
+      <div class="tab pro-only" onclick="showTab('ampel',this)">Ampel-Check</div>
+      <div class="tab" onclick="showTab('cf',this)">Cashflow</div>
+      <div class="tab" onclick="showTab('chancen',this)">Chancen & Risiken</div>
+      <div class="tab pro-only" onclick="showTab('kcheck',this)" style="display:none">Kaufen-Check</div>
+    </div>
+
+    <div id="pane-kpi" class="pane on">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="card"><div class="card-head">Finanzierungsdetails</div><div class="fin-grid" id="fin-grid"></div></div>
+    </div>
+
+    <div id="pane-ampel" class="pane pro-only-pane">
+      <div class="card"><div class="card-head">Ampel-System – alle Kennzahlen auf einen Blick</div>
+      <div class="amp-tbl-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="amp-tbl" id="amp-tbl"></table></div></div>
+    </div>
+
+    <div id="pane-cf" class="pane">
+      <div class="card"><div class="card-head">Cashflow-Rechnung</div><div id="cf-rows"></div></div>
+    </div>
+
+    <div id="pane-chancen" class="pane">
+      <div class="grid2">
+        <div class="card"><div class="card-head" style="color:var(--green)">✦ Chancen</div><div id="chancen-list"></div></div>
+        <div class="card"><div class="card-head" style="color:var(--yellow)">⚑ Prüfpunkte</div><div id="pruef-list"></div></div>
+      </div>
+    </div>
+
+    <!-- KAUFEN-CHECK mit Paywall auf Szenarien -->
+    <div id="pane-kcheck" class="pane pro-only-pane" style="display:none !important">
+      <div class="card">
+        <div class="card-head">Was braucht es für KAUFEN?</div>
+        <div id="kcheck-rows"></div>
+      </div>
+
+      <!-- PAYWALL auf Szenarien -->
+      <div class="paywall-overlay" id="scenario-overlay">
+        <div class="paywall-blur" id="scenario-blur">
+          <div class="card" style="margin-top:1rem">
+            <div class="card-head">💡 Kombinations-Szenarien – schnellste Wege zu KAUFEN</div>
+            <div id="scenario-list"></div>
+          </div>
+        </div>
+        <div class="paywall-box" id="scenario-paywall">
+          <div class="paywall-card">
+            <div class="pw-lock">🎁</div>
+            <div class="pw-title">In der Beta kostenlos</div>
+            <div class="pw-sub">Alle Funktionen sind während der Beta freigeschaltet.</div>
+            <div class="pw-features">
+              <div class="pw-feat">Alle Kombinations-Szenarien mit exakten Zielwerten</div>
+              <div class="pw-feat">PDF-Export aller Analysen</div>
+              <div class="pw-feat">Kaufen-Check mit konkreten Handlungsempfehlungen</div>
+            </div>
+            <button class="pw-btn" onclick="setProMode(true)">Analyse freischalten →</button>
+            <div class="pw-note">Keine Zahlung · Keine Kreditkarte · Sofort verfügbar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- ============================================================
+         KI-SZENARIEN (Worst / Base / Best Case)
+         ============================================================ -->
+    <div class="card" id="ki-szenarien-card" style="margin-top:1.5rem;display:none">
+      <div class="card-head">🤖 KI-Szenarien</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:1.25rem">
+        Wie entwickelt sich diese Immobilie unter verschiedenen Bedingungen? Die KI analysiert Worst, Base und Best Case auf Basis deiner echten Zahlen.
+      </p>
+
+      <div id="ki-trigger-area" style="text-align:center">
+        <button class="btn btn-primary btn-big" type="button" id="ki-generate-btn" onclick="generateKIScenarios()">
+          ✨ KI-Szenarien generieren
+        </button>
+        <p style="font-size:12px;color:var(--hint);margin-top:.5rem">Dauert ca. 5–10 Sekunden · Basiert auf deinen echten Zahlen</p>
+      </div>
+
+      <div id="ki-loading" style="display:none;text-align:center;padding:2rem 0">
+        <div class="ki-spinner"></div>
+        <p style="font-size:14px;color:var(--muted);margin-top:1rem" id="ki-loading-text">KI analysiert deine Immobilie...</p>
+      </div>
+
+      <div id="ki-error" style="display:none;padding:1rem;background:var(--red-bg);border-radius:var(--radius-sm);color:var(--red);font-size:13.5px"></div>
+
+      <div id="ki-result" style="display:none">
+        <div id="ki-scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.25rem"></div>
+
+        <div id="ki-verdict-box" style="background:var(--surface2);border-radius:var(--radius-sm);padding:1rem 1.25rem;font-size:13.5px;line-height:1.6;color:var(--text);border-left:3px solid var(--accent)"></div>
+
+        <!-- HANDLUNGSOPTIONEN -->
+        <div id="ki-optionen-box" style="margin-top:1.25rem;display:none">
+          <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">
+            Handlungsoptionen auf Basis deiner Zahlen
+          </div>
+          <div id="ki-optionen-list" style="display:flex;flex-direction:column;gap:.75rem"></div>
+          <div style="margin-top:1rem;padding:.75rem 1rem;background:var(--surface2);border-radius:var(--radius-sm);font-size:11.5px;color:var(--hint);line-height:1.5;border:1px solid var(--border)">
+            ⚠️ <strong>Hinweis:</strong> Diese Optionen basieren ausschließlich auf deinen Eingaben und sind rechnerische Szenarien — keine persönliche Anlage-, Immobilien- oder Finanzberatung im Sinne des Gesetzes. Für eine verbindliche Entscheidung empfehlen wir einen unabhängigen Finanz- oder Immobilienberater.
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;text-align:right">
+          <button class="btn btn-secondary" style="font-size:12px;padding:.4rem .9rem" onclick="generateKIScenarios()">↻ Neu generieren</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERGEBNIS TEILEN -->
+    <div style="margin-top:2rem;text-align:center">
+      <button class="btn btn-secondary" onclick="goTo(1)">&larr; Neue Analyse starten</button>
+    </div>
+  </div><!-- /pg-4 -->
+
+
+</main>
+
+<section class="site-section" id="preise">
+  <div class="info-card" style="text-align:center">
+    <div class="card-head" style="justify-content:center">Beta-Phase</div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.9rem;margin-bottom:.5rem">Komplett kostenlos</h2>
+    <p style="color:var(--muted);font-size:15px;max-width:560px;margin:0 auto 1.75rem">Alle Funktionen sind freigeschaltet — Kaufempfehlung, Ampel-Check, Szenarien und PDF-Export inklusive. Kein Abo, keine Kreditkarte.</p>
+
+    <!-- UPDATES FORMULAR (statt Warteliste) -->
+    <div class="waitlist-card" style="max-width:500px;margin:0 auto">
+      <div class="waitlist-head">
+        <span class="waitlist-badge">✉️ Updates</span>
+        <div class="waitlist-title">Auf dem Laufenden bleiben</div>
+      </div>
+      <div class="waitlist-desc">Erfahre als Erster wenn neue Features kommen. Kein Spam, jederzeit abmeldbar.</div>
+      <form class="waitlist-form" onsubmit="submitWaitlist(event, 'pro')">
+        <input type="email" placeholder="deine@email.de" required id="waitlist-email-main">
+        <button class="btn btn-primary" type="submit" style="padding:.7rem 1.5rem">Eintragen →</button>
+      </form>
+      <div class="waitlist-success" id="waitlist-success-main">
+        <strong>✓ Eingetragen!</strong> Du bekommst eine E-Mail bei wichtigen Updates.
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem">
+      <button class="btn btn-primary btn-big" onclick="goTo(1)">Jetzt kostenlos analysieren →</button>
+    </div>
+  </div>
+</section>
+
+<!-- REZENSIONEN -->
+<section class="site-section" id="rezensionen">
+  <div class="info-card">
+    <div class="reviews-head">
+      <div>
+        <div class="card-head">Nutzerfeedback</div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:1.9rem;margin-bottom:.3rem">Was Nutzer sagen</h2>
+        <p style="color:var(--muted);font-size:14.5px">ImmoDeal ist neu — dein Feedback hilft, das Tool besser zu machen.</p>
+      </div>
+    </div>
+
+    <div class="reviews-grid" id="reviews-grid">
+      <!-- wird per JS mit echten Nutzer-Bewertungen befüllt -->
+    </div>
+
+    <div id="no-reviews-hint" style="text-align:center;padding:1.5rem;color:var(--muted);font-size:14px">
+      Noch keine Bewertungen vorhanden. Sei der Erste! 👇
+    </div>
+
+    <button class="btn btn-secondary" type="button" style="margin-top:1rem" onclick="toggleReviewForm()">
+      <span id="review-toggle-label">✍️ Feedback geben</span>
+    </button>
+
+    <div class="review-form" id="review-form" style="display:none">
+      <h4>Dein Feedback</h4>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:.3rem">Sterne wählen</div>
+      <div class="star-picker" id="star-picker">
+        <span data-val="1">★</span>
+        <span data-val="2">★</span>
+        <span data-val="3">★</span>
+        <span data-val="4">★</span>
+        <span data-val="5">★</span>
+      </div>
+      <input type="text" id="rev-name" placeholder="Dein Name (z. B. Max M.)" maxlength="50">
+      <textarea id="rev-text" placeholder="Was hat dir geholfen? Was würdest du verbessern?" maxlength="500"></textarea>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" onclick="submitReview()">Feedback senden</button>
+        <button class="btn btn-secondary" type="button" onclick="toggleReviewForm()">Abbrechen</button>
+      </div>
+      <div style="font-size:11.5px;color:var(--hint);margin-top:.5rem">Dein Feedback wird lokal gespeichert. Kein Login nötig.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="site-section" id="faq">
+  <div class="info-card">
+    <div class="card-head">FAQ</div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.9rem;margin-bottom:1.25rem">Häufige Fragen</h2>
+    <div id="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Ist ImmoDeal eine Anlageberatung? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Nein. ImmoDeal ist ein Analyse-Werkzeug, das dir auf Basis deiner Eingaben eine strukturierte Einschätzung liefert. Die Entscheidung bleibt bei dir. Für verbindliche Beratung empfehlen wir Steuer- oder Finanzberater.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Wofür reicht die kostenlose Version? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Für einen schnellen Check: Alle Kennzahlen und der komplette Cashflow sind kostenlos sichtbar. Die konkrete Empfehlung, das Ampel-System, Kaufen-Check mit Szenarien und PDF-Export sind Teil der Pro-Version.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Wie funktioniert die Geld-zurück-Garantie? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Du kannst 14 Tage nach Kauf ohne Angabe von Gründen dein Geld zurückfordern. Eine kurze E-Mail genügt. Wir erstatten den vollen Betrag innerhalb von 5 Werktagen.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Was bekomme ich mit der Pro-Version? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Pro schaltet alle Funktionen dauerhaft frei: vollständiges Ampel-System, Kaufen-Check mit 3 Szenarien, Kauf-Empfehlung mit Begründung, PDF-Export und unbegrenzte Analysen – ohne zeitliche Einschränkung.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Werden meine Daten gespeichert? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Deine Eingaben bleiben nur lokal in deinem Browser (Local Storage). Es erfolgt keine Übertragung an einen Server und keine Weitergabe an Dritte. Beim Zurücksetzen werden alle Daten gelöscht.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Kann ich die Analyse mit anderen teilen? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Ja, der PDF-Export erstellt ein druckbares Dokument, das du z. B. an deinen Finanzberater, Partner oder deine Bank weitergeben kannst.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="site-section" id="kontakt">
+  <div class="info-card">
+    <div class="card-head">Kontakt</div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.9rem;margin-bottom:.45rem">Fragen, Feedback oder Kooperation?</h2>
+    <p style="color:var(--muted);max-width:760px">Schreib mir einfach per E-Mail – ich antworte persönlich.</p>
+    <div class="contact-grid">
+      <div class="contact-box">
+        <div class="pc-name" style="margin-bottom:.35rem">E-Mail</div>
+        <div style="font-size:16px;font-weight:600"><a href="mailto:immoanalyse4@gmail.com" style="color:inherit;text-decoration:none">immoanalyse4@gmail.com</a></div>
+        <div style="font-size:13px;color:var(--muted);margin-top:.35rem">Für Support, Rückfragen und Feedback.</div>
+      </div>
+      <div class="contact-box">
+        <div class="pc-name" style="margin-bottom:.35rem">Feedback</div>
+        <div style="font-size:16px;font-weight:600">Verbesserungsideen willkommen</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:.35rem">Das Tool ist in der Beta – jede Rückmeldung hilft, es besser zu machen.</div>
+      </div>
+      <div class="contact-box">
+        <div class="pc-name" style="margin-bottom:.35rem">Antwortzeit</div>
+        <div style="font-size:16px;font-weight:600">In der Regel 24–48h</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:.35rem">Wochenends kann es etwas länger dauern.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div style="font-weight:600">ImmoDeal <span style="font-weight:400;color:var(--hint);font-size:12px">· Beta-Version</span></div>
+      <div class="footer-links">
+        <button class="footer-link" type="button" onclick="showLegal('impressum')">Impressum</button>
+        <button class="footer-link" type="button" onclick="showLegal('datenschutz')">Datenschutz</button>
+        <button class="footer-link" type="button" onclick="scrollToContact()">Kontakt</button>
+      </div>
+    </div>
+    <div class="footer-note">
+      <strong>Beta-Phase:</strong> ImmoDeal befindet sich in der offenen Testphase. Alle Funktionen sind kostenlos nutzbar. · <strong>Wichtiger Hinweis:</strong> ImmoDeal stellt ein rein rechnerisches Analysewerkzeug bereit und erbringt <strong>keine Anlage-, Steuer-, Rechts- oder Finanzberatung</strong>. Alle Berechnungen beruhen ausschließlich auf den Eingaben des Nutzers und dienen der unverbindlichen Orientierung. Für Entscheidungen, die auf dieser Grundlage getroffen werden, wird keine Haftung übernommen. Jede Kaufentscheidung erfolgt eigenverantwortlich.
+    </div>
+  </div>
+</footer>
+
+
+
+
+<div class="legal-modal" id="legal-modal" aria-hidden="true">
+  <div class="legal-panel">
+    <div style="display:flex;justify-content:space-between;gap:1rem;align-items:start;margin-bottom:.5rem">
+      <div>
+        <div class="card-head" style="margin-bottom:.35rem">Rechtliches</div>
+        <h3 id="legal-title">Impressum</h3>
+      </div>
+      <button class="btn btn-secondary" type="button" onclick="closeLegal()">Schließen</button>
+    </div>
+    <div id="legal-content"></div>
+  </div>
+</div>
+
+<div class="success-toast" id="toast"></div>
+
+<!-- WAITLIST MODAL -->
+<div class="checkout-modal" id="checkout-modal" aria-hidden="true">
+  <div class="checkout-panel">
+    <h3 id="checkout-title">✉️ Updates erhalten</h3>
+    <p id="checkout-desc" style="margin-bottom:1rem">Trage deine E-Mail ein und erfahre als Erster von neuen Features. Kein Spam, jederzeit abmeldbar.</p>
+
+    <form onsubmit="submitWaitlist(event, 'modal')">
+      <input type="email" id="waitlist-email-modal" placeholder="deine@email.de" required
+             style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:.75rem .9rem;font-family:inherit;font-size:14.5px;background:var(--surface);transition:border-color .18s">
+
+      <div style="background:var(--surface2);border-radius:9px;padding:.7rem .9rem;margin-top:.85rem;font-size:12px;line-height:1.5">
+        <label style="display:flex;gap:.5rem;align-items:flex-start;cursor:pointer">
+          <input type="checkbox" id="waitlist-consent" required style="margin-top:2px;flex-shrink:0;accent-color:var(--accent)">
+          <span>Ich stimme zu, dass meine E-Mail für Updates gespeichert wird. Jederzeit abmeldbar. (Siehe <button type="button" class="footer-link" style="display:inline;padding:0;color:var(--accent);text-decoration:underline;font-size:inherit" onclick="showLegal('datenschutz')">Datenschutz</button>)</span>
+        </label>
+      </div>
+
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-primary" type="submit" style="flex:1;min-width:180px">✉ Eintragen</button>
+        <button class="btn btn-secondary" type="button" onclick="closeCheckout()">Schließen</button>
+      </div>
+    </form>
+
+    <div class="waitlist-success" id="waitlist-success-modal" style="margin-top:1rem">
+      <strong>✓ Eingetragen!</strong> Du bekommst eine E-Mail bei wichtigen Updates.
+    </div>
+
+    <div style="font-size:11.5px;color:var(--hint);margin-top:.85rem;text-align:center">
+      Kein Spam · Jederzeit abmeldbar · Kostenlos
+    </div>
+  </div>
+</div>
+
+<!-- PDF EXPORT MODAL -->
+<div class="pdf-modal" id="pdf-modal" aria-hidden="true">
+  <div class="pdf-panel" style="position:relative">
+    <button class="pdf-close-btn" type="button" onclick="closePdfModal()" aria-label="Schließen">✕</button>
+    <div class="pdf-preview-side">
+      <div class="pdf-mini" id="pdf-mini-preview">
+        <div class="pdf-mini-head">
+          <div class="pdf-mini-title">ImmoDeal Analyse</div>
+          <div class="pdf-mini-sub" id="pdf-mini-sub">Köln · 220.000 €</div>
+        </div>
+        <div class="pdf-mini-box verdict" id="pdf-mini-verdict">
+          <strong id="pdf-mini-emp">Kaufen</strong>
+          <span style="font-size:5px;color:#6a6860">Score <span id="pdf-mini-score">10</span>/14</span>
+        </div>
+        <div class="pdf-mini-kpis">
+          <div class="pdf-mini-kpi"><b id="pdf-mini-cf">+125 €</b><span>Cashflow/Mon.</span></div>
+          <div class="pdf-mini-kpi"><b id="pdf-mini-rent">5,2 %</b><span>Rendite</span></div>
+          <div class="pdf-mini-kpi"><b id="pdf-mini-faktor">17,5x</b><span>Faktor</span></div>
+          <div class="pdf-mini-kpi"><b id="pdf-mini-dscr">1,28</b><span>DSCR</span></div>
+        </div>
+        <div class="pdf-mini-box" style="font-size:5px;color:#6a6860">▸ Chancen &amp; Risiken ▸ Ampel-Check ▸ Szenarien</div>
+        <div class="pdf-mini-footer">
+          <span>ImmoDeal</span>
+          <span id="pdf-mini-date">18.04.2026</span>
+        </div>
+      </div>
+      <div class="pdf-preview-label">Live-Vorschau</div>
+    </div>
+
+    <div class="pdf-content-side">
+      <h3>PDF-Export</h3>
+      <p class="pdf-sub">Speichere die vollständige Analyse als PDF – zum Teilen, Drucken oder für dein Finanzgespräch.</p>
+
+      <div class="pdf-locked" id="pdf-locked-note" style="display:none">
+        <span style="font-size:16px">🔒</span>
+        <div>Der PDF-Export ist aktuell nicht verfügbar.</div>
+      </div>
+
+      <div class="pdf-options" id="pdf-options">
+        <label class="pdf-option">
+          <input type="checkbox" id="pdf-opt-verdict" checked>
+          <div class="pdf-option-label">
+            <b>Empfehlung &amp; Score</b>
+            <small>Die finale Kaufempfehlung mit Gesamtscore</small>
+          </div>
+        </label>
+        <label class="pdf-option">
+          <input type="checkbox" id="pdf-opt-kpi" checked>
+          <div class="pdf-option-label">
+            <b>Alle Kennzahlen</b>
+            <small>Cashflow, Rendite, DSCR, Faktor &amp; mehr</small>
+          </div>
+        </label>
+        <label class="pdf-option">
+          <input type="checkbox" id="pdf-opt-ampel" checked>
+          <div class="pdf-option-label">
+            <b>Ampel-Check &amp; Cashflow</b>
+            <small>Alle Kennzahlen mit Zielwerten und Status</small>
+          </div>
+        </label>
+        <label class="pdf-option">
+          <input type="checkbox" id="pdf-opt-scenarios" checked>
+          <div class="pdf-option-label">
+            <b>Kaufen-Check &amp; Szenarien</b>
+            <small>Konkrete Wege, wie der Deal zum Kauf wird</small>
+          </div>
+        </label>
+      </div>
+
+      <div class="pdf-actions">
+        <button class="btn btn-primary" type="button" id="pdf-export-btn" onclick="executePdfExport()" style="flex:1;min-width:140px">⬇ Als PDF speichern</button>
+        <button class="btn btn-secondary" type="button" onclick="closePdfModal()">Abbrechen</button>
+      </div>
+      <div style="font-size:11.5px;color:var(--hint);margin-top:.65rem">
+        Tipp: Im Druckdialog „Als PDF speichern" auswählen.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY CTA BAR -->
+<div class="sticky-cta" id="sticky-cta">
+  <div class="scta-text">
+    <strong>📤 Hat dir die Analyse geholfen?</strong>
+    <small>Teile dein Ergebnis oder speichere es per E-Mail</small>
+  </div>
+  <div style="display:flex;gap:.5rem">
+    <button class="btn btn-secondary" style="padding:.5rem 1rem;font-size:13px" onclick="hideStickyCta()">Schließen</button>
+    <button class="btn btn-primary" style="padding:.6rem 1.25rem" onclick="openWaitlistModal('pro')">Updates erhalten</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  HILFSFUNKTIONEN
+// ============================================================
+const G = id => document.getElementById(id);
+const fmt  = (n,d=0) => (isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fE   = (n,d=0) => fmt(n,d)+' €';
+const fP   = (n,d=1) => fmt(n*100,d)+' %';
+
+function fv(id){ const e=G(id); return e?parseFloat(e.value)||0:0; }
+function sv(id){ const e=G(id); return e?e.value:''; }
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+let currentPage = 1;
+const MAX = 4;
+let furthestPage = 1;
+const STORAGE_KEY = 'immodeal_v2_form';
+const DEFAULT_TAB = 'kpi';
+
+function updateSteps(){
+  for(let i=1;i<=MAX;i++){
+    const si = G('si-'+i);
+    if(!si) continue;
+    si.classList.remove('is-active','is-done');
+    if(i === currentPage) si.classList.add('is-active');
+    else if(i < furthestPage) si.classList.add('is-done');
+  }
+  for(let i=1;i<MAX;i++){
+    const sl = G('sl-'+i);
+    if(!sl) continue;
+    sl.style.background = i < furthestPage ? 'var(--green)' : 'var(--border)';
+  }
+  updatePageStatus();
+}
+
+function updatePageStatus(msg=''){
+  const box = G('page-status');
+  if(!box) return;
+  const tips = {
+    1: 'Schritt 1 von 4: Erfasse die Eckdaten des Objekts. Kaufpreis, Wohnfläche und Lage/Zustand sind die Basis für die Analyse.',
+    2: 'Schritt 2 von 4: Hier entscheidet sich, wie realistisch die Kalkulation ist. Trage Miete, Leerstand und laufende Kosten sauber ein.',
+    3: 'Schritt 3 von 4: Mit Eigenkapital, Zins und Tilgung beeinflusst du Cashflow, DSCR und EK-Rendite direkt.',
+    4: 'Ergebnis: Prüfe Kennzahlen, Ampeln und den Kaufen-Check. Kleine Änderungen bei Preis, Miete oder Finanzierung wirken sofort.'
+  };
+  box.innerHTML = msg || `<strong>${tips[currentPage]}</strong>`;
+  box.classList.add('show');
+}
+
+function switchPage(n){
+  G('pg-'+currentPage)?.classList.remove('on');
+  currentPage = n;
+  G('pg-'+n)?.classList.add('on');
+  furthestPage = Math.max(furthestPage, n);
+  updateSteps();
+  // Trust-Bar & Urgency-Banner nur auf Seite 1 anzeigen
+  if(n === 1){
+    document.body.classList.remove('not-home');
+  } else {
+    document.body.classList.add('not-home');
+  }
+  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  if(n===3) updateFinPrev();
+  if(n===4){
+    renderResults();
+    showTab(DEFAULT_TAB, document.querySelector('.tab'));
+    setTimeout(showKICard, 300);
+  }
+  if(n===1) resetKIScenarios();
+}
+
+function goTo(n){
+  try{
+    if(n<1||n>MAX) return;
+    if(typeof n !== 'number') n = parseInt(n,10);
+    // Dismiss keyboard on mobile
+    try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){}
+    if(n > currentPage){
+      // Soft validation - mark errors but never block navigation
+      for(let p=currentPage; p<n; p++){
+        try{ validatePage(p, false); }catch(e){ console.warn('validate error', e); }
+      }
+    }
+    switchPage(n);
+  } catch(err){
+    console.error('goTo error:', err);
+    // Fallback: force page switch even if something breaks
+    try{ switchPage(n); }catch(e){}
+  }
+}
+
+function resetKIScenarios(){
+  // KI-Karte zurücksetzen wenn neue Analyse startet
+  const card = G('ki-szenarien-card');
+  if(card) card.style.display = 'none';
+  const trigger = G('ki-trigger-area');
+  if(trigger) trigger.style.display = 'block';
+  const result = G('ki-result');
+  if(result) result.style.display = 'none';
+  const err = G('ki-error');
+  if(err) err.style.display = 'none';
+  const loading = G('ki-loading');
+  if(loading) loading.style.display = 'none';
+  const optBox = G('ki-optionen-box');
+  if(optBox) optBox.style.display = 'none';
+}
+
+function resetAll(){
+  if(!confirm('Möchtest du wirklich alle Eingaben zurücksetzen?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  window.location.reload();
+}
+
+// ============================================================
+//  LIVE FINANZIERUNGS-VORSCHAU (Seite 3)
+// ============================================================
+function updateFinPrev(){
+  const r = calc();
+  G('fp-dar').textContent  = fE(r.darlehen);
+  G('fp-rate').textContent = fE(r.rateM);
+  G('fp-eq').textContent   = fP(r.ekQ);
+  G('fp-ltv').textContent  = fmt(r.ltv,2)+'x';
+}
+
+// Live-Update / Autosave
+document.addEventListener('input', e=>{
+  const target = e.target;
+  if(target && target.id && target.id.startsWith('f_')){
+    saveForm();
+    clearFieldError(target);
+    if(currentPage===3 && target.closest('#pg-3')) updateFinPrev();
+    if(currentPage===4) renderResults();
+  }
+});
+document.addEventListener('change', e=>{
+  const target = e.target;
+  if(target && target.id && target.id.startsWith('f_')){
+    saveForm();
+    clearFieldError(target);
+    if(currentPage===4) renderResults();
+  }
+});
+
+// ============================================================
+//  KERNBERECHNUNG  (aus Excel-Logik)
+// ============================================================
+function calc(){
+  // --- Eingaben ---
+  const kp        = fv('f_kaufpreis');
+  const wfl       = fv('f_wfl') || 1;
+  const zustandPt = parseInt(sv('f_zustand')) || 0;
+  const lagePt    = parseInt(sv('f_lage'))    || 0;
+
+  // Nebenkosten
+  const gest   = fv('f_gest')/100;
+  const notar  = fv('f_notar')/100;
+  const makler = fv('f_makler')/100;
+  const snk    = fv('f_snk');
+  const capex  = fv('f_capex');
+  const nkPct  = gest + notar + makler;
+  const nkEur  = kp * nkPct + snk;
+  const gesinv = kp + nkEur;
+  const gesinvC= gesinv + capex;
+
+  // Finanzierung
+  const ek      = fv('f_ek');
+  const zins    = fv('f_zins')/100;
+  const tilgung = fv('f_tilgung')/100;
+  const darlehen= Math.max(0, gesinvC - ek);
+  const annPA   = darlehen * (zins + tilgung);
+  const rateM   = annPA / 12;
+  const ekQ     = ek / (gesinvC||1);
+  const ltv     = darlehen / (kp||1);
+  const tilgPA  = darlehen * tilgung;
+
+  // Miete & Cashflow
+  const km  = fv('f_kaltmiete');
+  const mm  = fv('f_marktmiete');
+  const ls  = fv('f_leerstand')/100;
+  const nu  = fv('f_numlag');
+  const hv  = fv('f_hv');
+  const ins = fv('f_instand');
+  const su  = fv('f_sonderumlage');
+
+  const jkmIst  = km * 12;
+  const jkmPot  = mm * 12;
+  const ausfall = jkmIst * ls;
+  const effjIst = jkmIst - ausfall;
+  const effjPot = jkmPot * (1-ls);
+  const betrKPA = (nu+hv)*12 + wfl*ins + su;
+  const jcfIst  = effjIst - betrKPA - annPA;
+  const jcfPot  = effjPot - betrKPA - annPA;
+  const mcfIst  = jcfIst / 12;
+  const mcfPot  = jcfPot / 12;
+  const cfTilg  = jcfIst + tilgPA;
+
+  // Kennzahlen
+  const brutR  = jkmIst / (kp||1);
+  const nettR  = effjIst / (gesinvC||1);  // Fix: mit Kaufnebenkosten (gesinvC statt gesinv)
+  const ekR    = cfTilg / (ek||1);
+  const faktor = kp / (jkmIst||1);
+  const kpQm   = kp / wfl;
+  const kmQm   = km / wfl;
+  const mmQm   = mm / wfl;
+  const dscr   = effjIst / (annPA||1);
+  const beM    = (betrKPA + annPA) / (12*(1-ls)||1);
+  const gapBE  = km - beM;
+
+  // ============ MARKTTYP-ABHÄNGIGE SCHWELLWERTE ============
+  const markttyp = sv('f_markttyp') || 'B';
+  
+  // Schwellwerte je Markttyp: [grün_ab, gelb_ab] 
+  const schwellen = {
+    A: { faktorG: 25, faktorY: 30, renditeG: 0.035, renditeY: 0.025, cfG: -50, cfY: -200 },
+    B: { faktorG: 20, faktorY: 25, renditeG: 0.045, renditeY: 0.035, cfG: 0, cfY: -100 },
+    C: { faktorG: 15, faktorY: 20, renditeG: 0.055, renditeY: 0.04,  cfG: 50, cfY: 0 },
+  };
+  const sw = schwellen[markttyp] || schwellen.B;
+
+  // ============ AMPELN (dynamisch nach Markttyp) ============
+  const cfA    = mcfIst >= sw.cfG ? 'G' : mcfIst >= sw.cfY ? 'Y' : 'R';
+  const rentA  = nettR >= sw.renditeG ? 'G' : nettR >= sw.renditeY ? 'Y' : 'R';
+  const faktA  = faktor <= sw.faktorG ? 'G' : faktor <= sw.faktorY ? 'Y' : 'R';
+  const dscrA  = dscr >= 1.15 ? 'G' : dscr >= 0.9 ? 'Y' : 'R';
+  const ekrA   = ekR >= 0.06 ? 'G' : ekR >= 0.03 ? 'Y' : 'R';
+
+  // Score (max 14 = 5 Ampeln à 2 Pkt + Lage max 2 + Zustand max 2)
+  const pts = a => a==='G'?2:a==='Y'?1:0;
+  const score = Math.max(0, Math.min(14,
+    pts(cfA)+pts(rentA)+pts(faktA)+pts(dscrA)+pts(ekrA)+lagePt+zustandPt
+  ));
+
+  // Markttyp-Label für Texte
+  const marktLabel = markttyp==='A'?'A-Stadt':markttyp==='C'?'C/D-Lage':'B-Stadt';
+
+  // Empfehlung — spezifisch mit konkreten Schwächen
+  let emp, empTxt, nextStep;
+  const schwaechen = [];
+  if(cfA==='R') schwaechen.push('negativer Cashflow');
+  if(rentA==='R') schwaechen.push('niedrige Rendite');
+  if(faktA==='R') schwaechen.push('hoher Kaufpreisfaktor');
+  if(dscrA==='R') schwaechen.push('DSCR unter Schwelle');
+  if(ekrA==='R') schwaechen.push('schwache EK-Rendite');
+
+  if(score>=9){
+    emp='Kaufen';
+    empTxt=`Solides Investment für ${marktLabel}-Verhältnisse. Die Kernkennzahlen (Cashflow, Rendite, DSCR) sind im grünen Bereich.`;
+    nextStep='Detailprüfung vor Ort durchführen, Finanzierungsangebot einholen und Gutachten beauftragen.';
+  } else if(score>=6){
+    emp='Mit Vorsicht prüfen';
+    empTxt=`Der Deal zeigt Potenzial, hat aber Schwächen${schwaechen.length>0?' bei '+schwaechen.join(', '):''} — gemessen an ${marktLabel}-Standards.`;
+    nextStep='Kaufpreis verhandeln, Finanzierung optimieren oder Miete prüfen. Dann erneut analysieren.';
+  } else {
+    emp='Nicht kaufen';
+    empTxt=`Kritische Bewertung für ${marktLabel}: ${schwaechen.length>0?schwaechen.join(', ')+' — ':''}deutliche Verbesserung bei Preis oder Konditionen nötig.`;
+    nextStep='Deal nur weiterverfolgen wenn Kaufpreis deutlich gesenkt oder Finanzierung grundlegend verändert werden kann.';
+  }
+
+  // Chancen & Prüfpunkte
+  const pruef=[], chancen=[];
+  if(mcfIst<0) pruef.push('Die Immobilie benötigt aktuell einen monatlichen Zuschuss. Preis, Finanzierung oder Miete sollten geprüft werden.');
+  if(dscr<1)   pruef.push('Die Mieteinnahmen decken den Schuldendienst noch nicht vollständig ab.');
+  if(ekQ<0.15) pruef.push('Die Eigenkapitalquote ist niedrig. Das erhöht das Finanzierungsrisiko.');
+  if(nettR<sw.renditeY) pruef.push(`Die Nettorendite von ${fmt(nettR*100,2)}% liegt unter dem ${marktLabel}-Minimum von ${fmt(sw.renditeY*100,1)}%.`);
+  if(faktor>sw.faktorY) pruef.push(`Der Kaufpreisfaktor von ${fmt(faktor,1)}x liegt über dem ${marktLabel}-Schwellwert von ${sw.faktorY}x.`);
+  if(ltv>0.9) pruef.push('Der Beleihungsauslauf (LTV) ist hoch – Finanzierungsrisiko erhöht.');
+
+  if(mm>km) chancen.push(`Sofortiges Mietpotenzial von ${fE(mm-km,0)}/Monat bis zur angesetzten Marktmiete.`);
+  if(kpQm<4000) chancen.push('Der Kaufpreis pro m² ist im aktuellen Rahmen plausibel.');
+  if(mcfPot>mcfIst+50) chancen.push(`Mit Marktmiete verbessert sich der Cashflow auf ${fE(mcfPot,0)}/Monat.`);
+  if(lagePt>=1) chancen.push('Die Lage stützt die langfristige Wertentwicklung positiv.');
+  if(zustandPt>=1) chancen.push('Guter Zustand reduziert kurzfristige Folgekosten spürbar.');
+  if(chancen.length===0) chancen.push('Kein unmittelbares Mietpotenzial oder besonderer Vorteil erkennbar.');
+
+  return {
+    kp,wfl,nkPct,nkEur,gesinv,gesinvC,
+    ek,darlehen,annPA,rateM,ekQ,ltv,tilgPA,
+    km,mm,jkmIst,jkmPot,effjIst,effjPot,betrKPA,
+    jcfIst,jcfPot,mcfIst,mcfPot,cfTilg,ausfall,
+    brutR,nettR,ekR,faktor,kpQm,kmQm,mmQm,dscr,beM,gapBE,
+    cfA,rentA,faktA,dscrA,ekrA,
+    markttyp,marktLabel,
+    score,emp,empTxt,nextStep,pruef,chancen
+  };
+}
+
+// ============================================================
+//  ERGEBNISSE RENDERN
+// ============================================================
+const ampCls   = a => a==='G'?'g':a==='Y'?'y':'r';
+const ampLabel = a => a==='G'?'GRÜN':a==='Y'?'PRÜFEN':'ROT';
+
+
+function renderScenarios(r){
+  const scenarioBox = G('scenario-list');
+  if(!scenarioBox) return;
+
+  const zinsTilg = (fv('f_zins')/100) + (fv('f_tilgung')/100);
+  const ls = fv('f_leerstand')/100;
+
+  // === Szenario 1: Kaufpreis senken ===
+  const zielKaufpreis18 = Math.max(0, r.jkmIst * 18);
+  const kaufpreisDelta = Math.max(0, r.kp - zielKaufpreis18);
+  const neueNK1 = zielKaufpreis18 * r.nkPct + fv('f_snk');
+  const neueGesinv1 = zielKaufpreis18 + neueNK1 + fv('f_capex');
+  const neuerDarlehen1 = Math.max(0, neueGesinv1 - r.ek);
+  const neueAnnPA1 = neuerDarlehen1 * zinsTilg;
+  const neuerCF1 = (r.effjIst - r.betrKPA - neueAnnPA1) / 12;
+  const neuDscr1 = r.effjIst / (neueAnnPA1 || 1);
+  const neueNettR1 = r.effjIst / (zielKaufpreis18 + neueNK1 || 1);
+  const faktor1ok = zielKaufpreis18 <= r.kp;
+  const allOk1 = neuerCF1 >= 0 && neuDscr1 >= 1.15 && neueNettR1 >= 0.05;
+  let sz1Status;
+  if(kaufpreisDelta === 0){
+    sz1Status = { txt: '✓ Kaufpreisfaktor bereits erfüllt', cls: 'bg-g' };
+  } else if(allOk1){
+    sz1Status = { txt: '✓ Bei Ziel-Kaufpreis: Kriterien erfüllt', cls: 'bg-g' };
+  } else if(neuerCF1 >= 0 || neuDscr1 >= 1.15){
+    sz1Status = { txt: '· Teils erfüllt – weitere Optimierung nötig', cls: 'bg-y' };
+  } else {
+    sz1Status = { txt: '· Kaufpreis allein reicht nicht aus', cls: 'bg-r' };
+  }
+
+  // === Szenario 2: Mehr EK ===
+  const zielAnnuitaet = r.effjIst / 1.15;
+  const zielDarlehen = zinsTilg > 0 ? zielAnnuitaet / zinsTilg : r.darlehen;
+  const extraEK = Math.max(0, r.darlehen - zielDarlehen);
+  const neuerDarlehen2 = Math.max(0, r.darlehen - extraEK);
+  const neueAnnPA2 = neuerDarlehen2 * zinsTilg;
+  const neuerCF2 = (r.effjIst - r.betrKPA - neueAnnPA2) / 12;
+  const neuDscr2 = r.effjIst / (neueAnnPA2 || 1);
+  let sz2Status;
+  if(extraEK === 0){
+    sz2Status = { txt: '✓ DSCR bereits erfüllt', cls: 'bg-g' };
+  } else if(neuerCF2 >= 0 && neuDscr2 >= 1.15){
+    sz2Status = { txt: '✓ DSCR ≥ 1,15 und Cashflow > 0 erfüllt', cls: 'bg-g' };
+  } else if(neuDscr2 >= 1.15){
+    sz2Status = { txt: '· DSCR erfüllt – Cashflow noch prüfen', cls: 'bg-y' };
+  } else {
+    sz2Status = { txt: '· Auch mit mehr EK nicht ausreichend', cls: 'bg-r' };
+  }
+
+  // === Szenario 3: Miete optimieren ===
+  const zielMonatsmieteCF = (r.betrKPA + r.annPA) / (12 * (1 - ls) || 1);
+  const zielMieteDscr = (r.annPA * 1.15 + r.betrKPA) / (12 * (1 - ls) || 1);
+  const zielMiete3 = Math.max(zielMonatsmieteCF, zielMieteDscr);
+  const mietDelta = Math.max(0, zielMiete3 - r.km);
+  let sz3Status;
+  if(mietDelta === 0){
+    sz3Status = { txt: '✓ Miete bereits ausreichend', cls: 'bg-g' };
+  } else if(r.mm >= zielMiete3){
+    sz3Status = { txt: '✓ Erreichbar mit angesetzter Marktmiete', cls: 'bg-g' };
+  } else if(mietDelta < 150){
+    sz3Status = { txt: '· Geringe Erhöhung nötig – Markt prüfen', cls: 'bg-y' };
+  } else {
+    sz3Status = { txt: '· Deutliche Mieterhöhung nötig – realistisch prüfen', cls: 'bg-r' };
+  }
+
+  const szenarien = [
+    {
+      titel:'1. Kaufpreis senken',
+      items:[
+        ['Ziel-Kaufpreis (Faktor 18)', fE(zielKaufpreis18,0)],
+        ['Notwendige Reduktion', fE(kaufpreisDelta,0)],
+      ],
+      status: sz1Status
+    },
+    {
+      titel:'2. Mehr Eigenkapital einsetzen',
+      items:[
+        ['Zusätzliches Eigenkapital', fE(extraEK,0)],
+        ['Ziel-Darlehen', fE(Math.max(0, zielDarlehen),0)],
+      ],
+      status: sz2Status
+    },
+    {
+      titel:'3. Miete optimieren',
+      items:[
+        ['Zielmiete für CF > 0', fE(zielMonatsmieteCF,0) + '/Mon.'],
+        ['Zielmiete für DSCR \u2265 1,15', fE(zielMieteDscr,0) + '/Mon.'],
+      ],
+      status: sz3Status
+    }
+  ];
+
+  scenarioBox.innerHTML = szenarien.map(sz => `
+    <div class="sz">
+      <div class="sz-h">${sz.titel}</div>
+      <div class="sz-g" style="grid-template-columns:1fr 1fr;gap:.5rem">
+        ${sz.items.map(item => `<div class="sz-i">${item[0]}<span>${item[1]}</span></div>`).join('')}
+      </div>
+      <div style="margin-top:.65rem"><span class="badge ${sz.status.cls}" style="font-size:11.5px">${sz.status.txt}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderLockedRecommendation(r){
+  // Neutrale Farbe – kein v-green/v-yellow/v-red, damit die Empfehlung nicht durchscheint
+  return `
+    <div class="verdict" style="background:var(--surface2);border-color:var(--border)">
+      <div class="verdict-icon-ring" style="background:var(--surface2);border-color:var(--border);color:var(--muted)">🎁</div>
+      <div class="verdict-eyebrow" style="color:var(--muted)">Empfehlung</div>
+      <div class="verdict-title" style="color:var(--muted);filter:blur(7px);user-select:none;pointer-events:none" aria-hidden="true">███████</div>
+      <div class="verdict-desc">Die konkrete Kauf-Empfehlung ist während der Beta kostenlos verfügbar.</div>
+      <div class="free-preview-note">Klicke einfach auf den Button — alle Funktionen sind aktuell kostenlos freigeschaltet.</div>
+      <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" onclick="setProMode(true)">Vollständige Analyse anzeigen →</button>
+      </div>
+    </div>`;
+}
+
+function renderLockedKpiNotice(){
+  return `
+    <div class="free-lock-overlay">
+      <div class="free-lock-blur">
+        <div class="kpi-grid">
+          <div class="kpi n"><div class="kl">DSCR</div><div class="kv">1,08</div><div class="ks">Schuldendienst-Deckung</div></div>
+          <div class="kpi n"><div class="kl">Break-even Miete</div><div class="kv">1.012 €</div><div class="ks">Benötigte Miete</div></div>
+          <div class="kpi n"><div class="kl">Kaufpreis / m²</div><div class="kv">3.450 €</div><div class="ks">Weitere Einordnung</div></div>
+        </div>
+      </div>
+      <div class="free-lock-card">
+        <div class="free-lock-inner">
+          <h4>Beta: Alle Funktionen kostenlos</h4>
+          <p>Klicke um die vollständige Auswertung mit allen Kennzahlen, Empfehlung und Kaufen-Check anzuzeigen.</p>
+          <div style="margin-top:1rem"><button class="btn btn-primary" type="button" onclick="setProMode(true)">Analyse anzeigen →</button></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function limitListWithUpsell(items, iconClass, iconText, kind){
+  const visible = items.slice(0,2);
+  const hiddenCount = Math.max(0, items.length - visible.length);
+  let html = visible.map(t=>`
+    <div class="li"><div class="li-ico ${iconClass}">${iconText}</div><p>${t}</p></div>`).join('');
+  if(!html){
+    html = '<p style="color:var(--hint);font-size:14px">Keine Einträge vorhanden.</p>';
+  }
+  if(hiddenCount > 0){
+    html += `
+      <div class="free-lock-overlay">
+        <div class="free-lock-blur">
+          <div class="li"><div class="li-ico ${iconClass}">${iconText}</div><p>Weitere ${kind.toLowerCase()} werden hier angezeigt.</p></div>
+          <div class="li"><div class="li-ico ${iconClass}">${iconText}</div><p>Zusätzliche Hinweise und Einordnung.</p></div>
+        </div>
+        <div class="free-lock-card">
+          <div class="free-lock-inner">
+            <h4>Weitere ${kind} verfügbar</h4>
+            <p>Noch ${hiddenCount} weitere ${kind.toLowerCase()} sind ausgeblendet. In der Beta kostenlos sichtbar.</p>
+            <div style="margin-top:1rem"><button class="btn btn-primary" type="button" onclick="setProMode(true)">Alles anzeigen →</button></div>
+          </div>
+        </div>
+      </div>`;
+  }
+  return html;
+}
+
+
+function renderResults(){
+  const r = calc();
+
+  // -- VERDICT --
+  const vc = r.emp==='Kaufen'?'v-green':r.emp==='Mit Vorsicht prüfen'?'v-yellow':'v-red';
+  const vi = r.emp==='Kaufen'?'✓':r.emp==='Mit Vorsicht prüfen'?'!':'✕';
+  G('verdict-box').className = '';
+  G('verdict-box').innerHTML = isProMode ? `
+    <div class="verdict ${vc}">
+      <div class="verdict-icon-ring">${vi}</div>
+      <div class="verdict-eyebrow">Empfehlung</div>
+      <div class="verdict-title">${r.emp}</div>
+      <div class="verdict-desc">${r.empTxt}</div>
+      <div class="verdict-next">Nächster Schritt: ${r.nextStep}</div>
+      ${''/* Kaufen-Check Button entfernt — KI-Szenarien übernehmen diese Funktion */}
+    </div>` : renderLockedRecommendation(r);
+
+  // -- SCORE --
+  const sc = r.score;
+  const scColor = sc>=9?'var(--green)':sc>=6?'var(--yellow)':'var(--red)';
+  const scBg    = sc>=9?'var(--green-bg)':sc>=6?'var(--yellow-bg)':'var(--red-bg)';
+  G('sc-ring').style.cssText = `background:${scBg};border-color:${scColor};color:${scColor}`;
+  G('sc-num').textContent = sc;
+  G('sc-desc').textContent = 'Score aus Cashflow, Rendite, Kaufpreisfaktor, DSCR, EK-Rendite, Lage & Zustand.';
+  G('sc-fill').style.cssText = `width:${sc/14*100}%;background:${scColor}`;
+
+  // -- KPIs --
+  const kpis = [
+    {l:'Monats-Cashflow', v:fE(r.mcfIst,0)+'/Mon.', s:'Ist-Cashflow nach allen Kosten', a:r.cfA},
+    {l:'Nettorendite',    v:fP(r.nettR),             s:'Netto auf Gesamtinvestition',    a:r.rentA},
+    {l:'Bruttorendite',   v:fP(r.brutR),             s:'Brutto auf Kaufpreis',            a:'N'},
+    {l:'EK-Rendite',      v:fP(r.ekR),               s:'Rendite auf Eigenkapital',        a:r.ekrA},
+    {l:'Kaufpreisfaktor', v:fmt(r.faktor,1)+'x',     s:'Kaufpreis / Jahreskaltmiete',     a:r.faktA},
+    {l:'DSCR',            v:fmt(r.dscr,2),            s:'Schuldendienst-Deckung (≥1,15)', a:r.dscrA},
+    {l:'Break-even Miete',v:fE(r.beM,0)+'/Mon.',    s:'Aktuell: '+fE(r.km,0)+'/Mon.',    a:r.km>=r.beM?'G':'R'},
+    {l:'Kaufpreis / m²',  v:fE(r.kpQm,0),           s:r.wfl+' m² Wohnfläche',            a:'N'},
+  ];
+  // Kostenlos: alle Kennzahlen sichtbar
+  G('kpi-grid').innerHTML = kpis.map(k=>`
+    <div class="kpi ${ampCls(k.a)}">
+      <div class="kl">${k.l}</div>
+      <div class="kv">${k.v}</div>
+      <div class="ks">${k.s}</div>
+    </div>`).join('');
+
+  // Fin details
+  G('fin-grid').innerHTML = [
+    {l:'Gesamtinvestition',     v:fE(r.gesinv)},
+    {l:'Kaufnebenkosten',       v:fE(r.nkEur)+' ('+fP(r.nkPct)+')'},
+    {l:'Darlehensbetrag',       v:fE(r.darlehen)},
+    {l:'Monatl. Kreditrate',    v:fE(r.rateM)},
+    {l:'Eigenkapitalquote',     v:fP(r.ekQ)},
+    {l:'LTV',                   v:fmt(r.ltv,2)+'x'},
+    {l:'Jahresannuität',        v:fE(r.annPA)},
+    {l:'Tilgung p.a.',          v:fE(r.tilgPA)},
+  ].map(f=>`<div class="fi"><div class="fi-l">${f.l}</div><div class="fi-v">${f.v}</div></div>`).join('');
+
+  // -- AMPEL TABLE --
+  const ampRows = [
+    {n:'Cashflow (mtl.)',    a:r.cfA,   ist:fE(r.mcfIst,0)+'/Mon.',   ziel:'> 0 €/Monat'},
+    {n:'Nettorendite',       a:r.rentA, ist:fP(r.nettR),               ziel:'≥ 5,0 %'},
+    {n:'Kaufpreisfaktor',    a:r.faktA, ist:fmt(r.faktor,1)+'x',       ziel:'≤ 18x'},
+    {n:'DSCR',               a:r.dscrA, ist:fmt(r.dscr,2),             ziel:'≥ 1,15'},
+    {n:'EK-Rendite',         a:r.ekrA,  ist:fP(r.ekR),                 ziel:'≥ 6,0 %'},
+  ];
+  G('amp-tbl').innerHTML = `<thead><tr><th>Kennzahl</th><th>Ist-Wert</th><th>Ziel</th><th>Status</th></tr></thead><tbody>`+
+    ampRows.map(row=>`<tr>
+      <td><strong>${row.n}</strong></td>
+      <td>${row.ist}</td>
+      <td style="color:var(--hint)">${row.ziel}</td>
+      <td><span class="dot-wrap ${ampCls(row.a)}"><span class="dot ${ampCls(row.a)}"></span>${ampLabel(row.a)}</span></td>
+    </tr>`).join('')+'</tbody>';
+
+  // -- CASHFLOW --
+  const cfItems=[
+    {l:'Jahreskaltmiete (Ist)',            v:r.jkmIst,  pos:true},
+    {l:'Mietausfall (Leerstand)',           v:-r.ausfall, pos:false},
+    {l:'Effektive Jahresmiete (Ist)',       v:r.effjIst, pos:true, bold:true},
+    {l:'Betriebskosten p.a.',              v:-r.betrKPA,pos:false},
+    {l:'Jahresannuität (Zins+Tilgung)',    v:-r.annPA,  pos:false},
+    {l:'Jahres-Cashflow (Ist)',            v:r.jcfIst,  pos:r.jcfIst>=0, bold:true},
+    {l:'Monats-Cashflow (Ist)',            v:r.mcfIst,  pos:r.mcfIst>=0, bold:true},
+    {l:'Cashflow + Tilgung p.a.',         v:r.cfTilg,  pos:r.cfTilg>=0},
+    {l:'Monats-Cashflow (Marktmiete)',     v:r.mcfPot,  pos:r.mcfPot>=0},
+  ];
+  G('cf-rows').innerHTML = cfItems.map(c=>`
+    <div class="cf-row${c.bold?' bold':''}">
+      <span style="color:${c.bold?'var(--text)':'var(--muted)'}">${c.l}</span>
+      <span class="${c.pos?'cf-pos':'cf-neg'}">${c.v>=0?'+':''}${fE(c.v,0)}</span>
+    </div>`).join('');
+
+  // -- CHANCEN --
+  G('chancen-list').innerHTML = isProMode
+    ? r.chancen.map(t=>`<div class="li"><div class="li-ico g">✓</div><p>${t}</p></div>`).join('')
+    : limitListWithUpsell(r.chancen, 'g', '✓', 'Chancen');
+  G('pruef-list').innerHTML = isProMode
+    ? (r.pruef.map(t=>`<div class="li"><div class="li-ico a">!</div><p>${t}</p></div>`).join('') ||
+      '<p style="color:var(--hint);font-size:14px">Keine kritischen Prüfpunkte.</p>')
+    : limitListWithUpsell(r.pruef.length ? r.pruef : ['Keine kritischen Prüfpunkte.'], 'a', '!', 'Prüfpunkte');
+
+  // -- KAUFEN-CHECK --
+  const checks=[
+    {n:'Cashflow (mtl.)',  hint:'Ziel: > 0 €/Monat',  ist:fE(r.mcfIst,0)+'/Mon.', a:r.cfA,
+     tip:'Kaufpreis senken, mehr EK oder Miete erhöhen.'},
+    {n:'Nettorendite',     hint:'Ziel: ≥ 5,0 %',       ist:fP(r.nettR),             a:r.rentA,
+     tip:`Max. Gesamtinvest. für 5 %: ${fE(r.effjIst/0.05,0)}`},
+    {n:'Kaufpreisfaktor',  hint:'Ziel: ≤ 18x',          ist:fmt(r.faktor,1)+'x',     a:r.faktA,
+     tip:`Max. Kaufpreis für 18x: ${fE(r.jkmIst*18,0)}`},
+    {n:'DSCR',             hint:'Ziel: ≥ 1,15',         ist:fmt(r.dscr,2),            a:r.dscrA,
+     tip:'Höhere Miete, niedrigerer Zins oder mehr EK einbringen.'},
+    {n:'EK-Rendite',       hint:'Ziel: ≥ 6,0 %',        ist:fP(r.ekR),               a:r.ekrA,
+     tip:'EK-Einsatz, Kaufpreis und Miete gemeinsam optimieren.'},
+  ];
+  G('kcheck-rows').innerHTML = checks.map(c=>`
+    <div class="chk-row">
+      <div>
+        <div class="chk-name">${c.n}</div>
+        <div class="chk-hint">${c.hint}</div>
+        <div class="chk-tip">${c.tip}</div>
+      </div>
+      <div class="chk-v">${c.ist}</div>
+      <div><span class="badge bg-${ampCls(c.a)}">${ampLabel(c.a)}</span></div>
+    </div>`).join('');
+
+  renderScenarios(r);
+}
+
+// ============================================================
+//  TAB-WECHSEL
+// ============================================================
+function showTab(name, clickedTab=null){
+  const names = ['kpi','ampel','cf','chancen'];
+  document.querySelectorAll('.tab').forEach(tab=>tab.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  const pane = G('pane-'+name);
+  if(pane) pane.classList.add('on');
+  if(clickedTab){
+    clickedTab.classList.add('on');
+    return;
+  }
+  const idx = names.indexOf(name);
+  if(idx >= 0){
+    const tabs = document.querySelectorAll('.tab');
+    if(tabs[idx]) tabs[idx].classList.add('on');
+  }
+}
+
+// ============================================================
+//  VALIDIERUNG / UX / STORAGE
+// ============================================================
+function getAllFields(){
+  return [...document.querySelectorAll('[id^="f_"]')];
+}
+
+function getFieldWrap(el){
+  return el?.closest('.field')?.querySelector('.inp-wrap');
+}
+
+function getErrorNode(el){
+  const field = el?.closest('.field');
+  if(!field) return null;
+  let err = field.querySelector('.field-error');
+  if(!err){
+    err = document.createElement('div');
+    err.className = 'field-error';
+    field.appendChild(err);
+  }
+  return err;
+}
+
+function setFieldError(el, msg){
+  const wrap = getFieldWrap(el);
+  const err = getErrorNode(el);
+  if(wrap) wrap.classList.add('is-error');
+  if(err) err.textContent = msg || '';
+}
+
+function clearFieldError(el){
+  const wrap = getFieldWrap(el);
+  const err = getErrorNode(el);
+  if(wrap) wrap.classList.remove('is-error');
+  if(err) err.textContent = '';
+}
+
+function validateField(el){
+  if(!el) return true;
+  const id = el.id;
+  const value = el.type === 'text' ? (el.value || '').trim() : parseFloat(el.value);
+  clearFieldError(el);
+
+  if(id === 'f_kaufpreis' && (!(value > 0))) return setFieldError(el, 'Bitte einen Kaufpreis größer als 0 eingeben.'), false;
+  if(id === 'f_wfl' && (!(value > 0))) return setFieldError(el, 'Bitte eine Wohnfläche größer als 0 eingeben.'), false;
+  if(id === 'f_baujahr' && (value < 1800 || value > new Date().getFullYear()+1)) return setFieldError(el, 'Bitte ein plausibles Baujahr eingeben.'), false;
+  if(id === 'f_ort' && !el.value.trim()) return setFieldError(el, 'Bitte Ort oder Lage eintragen.'), false;
+
+  if(['f_gest','f_notar','f_makler','f_zins','f_tilgung','f_leerstand'].includes(id) && value < 0) return setFieldError(el, 'Bitte einen Wert ab 0 eingeben.'), false;
+  if(id === 'f_leerstand' && value > 100) return setFieldError(el, 'Leerstand darf maximal 100 % sein.'), false;
+  if(['f_snk','f_capex','f_kaltmiete','f_marktmiete','f_numlag','f_hv','f_instand','f_sonderumlage','f_ek'].includes(id) && value < 0) return setFieldError(el, 'Bitte einen Wert ab 0 eingeben.'), false;
+  if(id === 'f_zinsbind' && (!(value > 0))) return setFieldError(el, 'Bitte eine Laufzeit größer als 0 eingeben.'), false;
+
+  return true;
+}
+
+function fieldsForPage(page){
+  const ids = {
+    1:['f_kaufpreis','f_wfl','f_baujahr','f_objektart','f_ort','f_zustand','f_lage','f_gest','f_notar','f_makler','f_snk'],
+    2:['f_kaltmiete','f_marktmiete','f_leerstand','f_mietpot','f_numlag','f_hv','f_instand','f_sonderumlage','f_capex'],
+    3:['f_ek','f_zins','f_tilgung','f_zinsbind']
+  };
+  return (ids[page] || []).map(G).filter(Boolean);
+}
+
+function validatePage(page, focusFirst=false){
+  const fields = fieldsForPage(page);
+  let firstInvalid = null;
+  let valid = true;
+  fields.forEach(el=>{
+    const ok = validateField(el);
+    if(!ok && !firstInvalid) firstInvalid = el;
+    valid = valid && ok;
+  });
+  if(!valid){
+    updatePageStatus('Bitte korrigiere die markierten Felder, bevor du weitergehst.');
+    if(focusFirst && firstInvalid){
+      firstInvalid.focus();
+      firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    return false;
+  }
+  updatePageStatus();
+  return true;
+}
+
+function saveForm(){
+  const data = {};
+  getAllFields().forEach(el => data[el.id] = el.value);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function restoreForm(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    Object.entries(data).forEach(([id, value])=>{
+      const el = G(id);
+      if(el && value !== undefined) el.value = value;
+    });
+  }catch(err){
+    console.warn('Autosave konnte nicht geladen werden.', err);
+  }
+}
+
+function attachFieldHelpers(){
+  const helperText = {
+    f_gest:'Standard in NRW: 6,5 %',
+    f_notar:'Typisch ca. 2,0 %',
+    f_makler:'Falls Makler: oft 3,0–3,57 %',
+    f_numlag:'Faustwert Wohnung: 30–120 € / Monat',
+    f_hv:'Faustwert: 20–30 € / Monat',
+    f_instand:'Faustwert: 8–15 € / m² / Jahr',
+    f_leerstand:'Standardwert: 2–3 %',
+    f_zins:'Aktuell oft 3,5–4,5 %',
+    f_tilgung:'Standard: 2,0 %',
+    f_ek:'Oft sinnvoll: Kaufnebenkosten + 10 % Kaufpreis'
+  };
+  Object.entries(helperText).forEach(([id, text])=>{
+    const el = G(id);
+    const field = el?.closest('.field');
+    if(field && !field.querySelector('.field-help')){
+      const node = document.createElement('div');
+      node.className = 'field-help';
+      node.textContent = 'Ø / Hinweis: ' + text;
+      field.appendChild(node);
+    }
+  });
+  getAllFields().forEach(el => getErrorNode(el));
+}
+
+function showToast(msg){
+  const t = G('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+function openCheckout(plan='pro'){
+  // BETA-Modus: Checkout öffnet das Waitlist-Modal
+  openWaitlistModal(plan);
+}
+
+function openWaitlistModal(plan='pro'){
+  const modal = G('checkout-modal');
+  // Immer gleicher Text - kein Pricing mehr
+  G('checkout-title').innerHTML = '✉️ Updates erhalten';
+  G('checkout-desc').innerHTML  = 'Trage deine E-Mail ein und erfahre als Erster von neuen Features. Kein Spam, jederzeit abmeldbar.';
+  modal?.classList.add('show');
+  modal?.setAttribute('aria-hidden','false');
+  modal?.setAttribute('data-plan', plan);
+  G('waitlist-success-modal')?.classList.remove('show');
+}
+
+function closeCheckout(){
+  const modal = G('checkout-modal');
+  modal?.classList.remove('show');
+  modal?.setAttribute('aria-hidden','true');
+}
+
+// ============================================================
+//  WAITLIST – sammelt E-Mails lokal (LocalStorage)
+// ============================================================
+const WAITLIST_KEY = 'immodeal_waitlist_v1';
+
+function getWaitlist(){
+  try{ return JSON.parse(localStorage.getItem(WAITLIST_KEY) || '[]'); }catch{ return []; }
+}
+function saveWaitlistEntry(entry){
+  const list = getWaitlist();
+  // Duplikate vermeiden
+  if(list.some(e => e.email?.toLowerCase() === entry.email.toLowerCase())) return false;
+  list.push(entry);
+  try{ localStorage.setItem(WAITLIST_KEY, JSON.stringify(list)); }catch{}
+  return true;
+}
+
+function submitWaitlist(event, source){
+  event.preventDefault();
+  let emailEl, successEl;
+  if(source === 'modal'){
+    emailEl = G('waitlist-email-modal');
+    successEl = G('waitlist-success-modal');
+    const consent = G('waitlist-consent');
+    if(consent && !consent.checked){
+      showToast('Bitte bestätige die Datenschutz-Zustimmung.');
+      consent.focus();
+      return;
+    }
+  } else {
+    emailEl = G('waitlist-email-main');
+    successEl = G('waitlist-success-main');
+  }
+  const email = (emailEl?.value || '').trim();
+  if(!email || !email.includes('@') || !email.includes('.')){
+    showToast('Bitte eine gültige E-Mail-Adresse eingeben.');
+    emailEl?.focus();
+    return;
+  }
+  const plan = G('checkout-modal')?.getAttribute('data-plan') || 'pro';
+  const isNew = saveWaitlistEntry({
+    email,
+    plan: source === 'modal' ? plan : 'pro',
+    source,
+    date: new Date().toISOString()
+  });
+  if(successEl) successEl.classList.add('show');
+  if(emailEl) emailEl.value = '';
+  // Counter erhöhen (sichtbarer Effekt)
+  const countEl = G('waitlist-count-num');
+  if(countEl){
+    const curr = parseInt(countEl.textContent.replace(/\D/g,''), 10) || 187;
+    countEl.textContent = (curr + 1).toLocaleString('de-DE');
+  }
+  showToast(isNew ? '✓ Eingetragen! Du bekommst Updates per E-Mail.' : '✓ Du bist bereits eingetragen.');
+  // Modal schließt sich automatisch nach kurzer Zeit
+  if(source === 'modal'){
+    setTimeout(()=>{
+      closeCheckout();
+      if(successEl) successEl.classList.remove('show');
+    }, 3500);
+  }
+}
+
+// Export der Waitlist für dich als Betreiber (via Konsole aufrufbar)
+window.exportWaitlist = function(){
+  const list = getWaitlist();
+  if(list.length === 0){ console.log('Noch keine Einträge.'); return; }
+  const csv = 'email,plan,source,date\n' + list.map(e => `${e.email},${e.plan},${e.source},${e.date}`).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `immodeal-waitlist-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  console.log(`${list.length} Einträge exportiert.`);
+};
+
+// Alte simulatePurchase-Funktion bleibt als Stub (falls noch irgendwo verlinkt)
+function simulatePurchase(){
+  openWaitlistModal('pro');
+}
+function openPricing(){
+  G('preise')?.scrollIntoView({behavior:'smooth', block:'start'});
+  showToast('Hier sehen Nutzer direkt deine Preise und Freischaltung.');
+}
+
+
+function scrollToContact(){
+  G('kontakt')?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+const LEGAL_WARNING = `
+  <div class="legal-warning">
+    ⚠️ <strong>Hinweis für dich als Betreiber:</strong> Dies ist eine <strong>solide Platzhalter-Vorlage</strong>, die die wichtigsten deutschen Rechtspflichten abdeckt. Die gelb markierten Felder <span class="legal-placeholder">[So markiert]</span> musst du mit deinen konkreten Daten ausfüllen, <strong>bevor du live gehst</strong>. Trotz sorgfältiger Formulierung <strong>ersetzt diese Vorlage keine anwaltliche Prüfung</strong> – gerade bei einem kostenpflichtigen Tool im Finanzumfeld empfiehlt sich eine Überprüfung durch einen Fachanwalt (ca. 100–300 €) oder ein geprüftes Muster (z.B. eRecht24, Trusted Shops).
+  </div>`;
+
+const LEGAL_CONTENT = {
+  impressum: {
+    title: 'Impressum',
+    html: `
+      <p>Angaben gemäß § 5 TMG / § 18 Abs. 2 MStV:</p>
+
+      <h4>Anbieter</h4>
+      <p>
+        Nils Hanings<br>
+        Beginenstraße 20<br>
+        52062 Aachen<br>
+        Deutschland
+      </p>
+
+      <h4>Kontakt</h4>
+      <p>
+        E-Mail: <a href="mailto:immoanalyse4@gmail.com">immoanalyse4@gmail.com</a>
+      </p>
+
+      <h4>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h4>
+      <p>
+        Nils Hanings<br>
+        Beginenstraße 20<br>
+        52062 Aachen
+      </p>
+
+      <h4>Hinweis zur Umsatzsteuer</h4>
+      <p>Diese Website wird aktuell ohne gewerbliche Einnahmen betrieben (Beta-Testphase). Eine Umsatzsteuer-Identifikationsnummer liegt daher nicht vor.</p>
+
+      <h4>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h4>
+      <p>Wir sind nicht bereit oder verpflichtet, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+
+      <h4>EU-Streitschlichtung</h4>
+      <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a>. Die E-Mail-Adresse findest du oben im Impressum.</p>
+
+      <h4>Haftung für Inhalte</h4>
+      <p>Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.</p>
+
+      <h4>Haftung für Links</h4>
+      <p>Unser Angebot enthält ggf. Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar.</p>
+
+      <h4>Urheberrecht</h4>
+      <p>Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+
+      <p style="margin-top:1.5rem;font-size:12.5px;color:var(--hint)">Stand: April 2026</p>
+    `
+  },
+
+  datenschutz: {
+    title: 'Datenschutzerklärung',
+    html: `
+      <div class="legal-warning" style="background:#eef2fc;border-color:#c4d3f5;color:#1a3fa0">
+        ℹ️ <strong>Hinweis:</strong> Diese Website befindet sich aktuell in der <strong>Beta-Testphase</strong>. Es werden keine Zahlungen verarbeitet und die Datenverarbeitung beschränkt sich auf das technisch Notwendige.
+      </div>
+
+      <h4>1. Verantwortlicher im Sinne der DSGVO</h4>
+      <p>
+        Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br>
+        Nils Hanings<br>
+        Beginenstraße 20<br>
+        52062 Aachen<br>
+        E-Mail: <a href="mailto:immoanalyse4@gmail.com">immoanalyse4@gmail.com</a>
+      </p>
+
+      <h4>2. Allgemeine Grundsätze</h4>
+      <p>Wir nehmen den Schutz deiner persönlichen Daten sehr ernst und behandeln deine Daten vertraulich sowie entsprechend der gesetzlichen Datenschutzvorschriften (DSGVO, BDSG, TDDDG) und dieser Datenschutzerklärung.</p>
+      <p>Die Nutzung unserer Website ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf dieser Seite personenbezogene Daten (z.B. Name, Anschrift oder E-Mail-Adressen) erhoben werden, erfolgt dies, soweit möglich, auf freiwilliger Basis.</p>
+
+      <h4>3. Datenerfassung auf unserer Website</h4>
+      <p><strong>a) Server-Logfiles:</strong> Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server-Logfiles, die dein Browser automatisch übermittelt. Dies sind: Browsertyp und Browserversion, verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden Rechners, Uhrzeit der Serveranfrage, anonymisierte IP-Adresse.</p>
+      <p>Diese Daten werden nicht mit anderen Datenquellen zusammengeführt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an technisch fehlerfreier Darstellung und Sicherheit).</p>
+
+      <p><strong>b) Eingaben im Analyse-Tool:</strong> Deine Eingaben im Analyse-Tool (Kaufpreis, Miete, Finanzierungsdaten usw.) werden ausschließlich <strong>lokal in deinem Browser</strong> gespeichert (LocalStorage / SessionStorage). Sie werden <strong>nicht an unsere Server übertragen</strong>. Du kannst diese Daten jederzeit über die Funktion „Neu starten" oder durch Leeren deines Browserspeichers löschen.</p>
+
+      <p><strong>c) E-Mail-Updates:</strong> Wenn du dich für Updates einträgst, wird deine E-Mail-Adresse zusammen mit dem Zeitpunkt der Eintragung <strong>lokal in deinem Browser</strong> gespeichert. Zweck: Benachrichtigung bei wichtigen Änderungen oder neuen Features. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung). Du kannst deine Einwilligung jederzeit durch Löschen deiner Browser-Daten oder per E-Mail an <a href="mailto:immoanalyse4@gmail.com">immoanalyse4@gmail.com</a> widerrufen.</p>
+
+      <p><strong>d) Kundenbewertungen:</strong> Abgegebene Bewertungen werden ebenfalls lokal in deinem Browser gespeichert und nicht auf Servern veröffentlicht. Es findet keine Übertragung an Dritte statt.</p>
+
+      <h4>4. Hosting</h4>
+      <p>Diese Website wird gehostet bei <strong>Vercel Inc.</strong>, 340 Pine Street, Suite 701, San Francisco, CA 94104, USA. Vercel erhebt beim Aufruf automatisch Server-Logfiles (IP-Adresse, Browsertyp, Betriebssystem, Referrer-URL, Datum/Uhrzeit) zur technischen Bereitstellung. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenschutzerklärung: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">vercel.com/legal/privacy-policy</a>.</p>
+      <p>Die KI-Analyse wird über einen Server bei <strong>Railway Corporation</strong>, San Francisco, CA, USA verarbeitet. Es werden ausschließlich die von dir eingegebenen Immobiliendaten (keine personenbezogenen Daten) übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.</p>
+
+      <h4>5. Zahlungsabwicklung</h4>
+      <p>In der aktuellen Beta-Testphase werden <strong>keine Zahlungen verarbeitet</strong>. Eine Zahlungsabwicklung findet nicht statt. Dieser Abschnitt wird ergänzt, sobald das Tool offiziell kostenpflichtig angeboten wird.</p>
+
+      <h4>6. Cookies</h4>
+      <p>Diese Website verwendet <strong>keine Tracking-Cookies</strong> und <strong>kein Analytics-Tool</strong>. Es werden lediglich technisch erforderliche Speichermechanismen (LocalStorage) eingesetzt, um deine Eingaben während der Sitzung zu erhalten. Diese Speicherung erfolgt ausschließlich lokal auf deinem Gerät und wird zu keinem Zeitpunkt an Server übertragen. Rechtsgrundlage: § 25 Abs. 2 Nr. 2 TDDDG (technisch erforderlich).</p>
+
+      <h4>7. Schriftarten (Google Fonts)</h4>
+      <p>Diese Website bindet Schriften von Google Fonts ein. Beim Aufruf einer Seite lädt dein Browser die benötigten Schriften, um Texte korrekt darzustellen. Zu diesem Zweck muss der von dir verwendete Browser Verbindung zu Servern von Google LLC (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) aufnehmen. Hierdurch erlangt Google Kenntnis darüber, dass über deine IP-Adresse unsere Website aufgerufen wurde.</p>
+      <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einheitlicher und ansprechender Schriftdarstellung). Weitere Informationen zu Google Fonts findest du unter: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.</p>
+
+      <h4>8. Kontaktaufnahme</h4>
+      <p>Wenn du uns per E-Mail kontaktierst, werden deine Angaben zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung deiner Anfrage). Diese Daten werden nicht ohne deine Einwilligung weitergegeben und nach Erledigung gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+
+      <h4>9. Deine Rechte</h4>
+      <p>Du hast gegenüber uns folgende Rechte hinsichtlich der dich betreffenden personenbezogenen Daten:</p>
+      <ul>
+        <li><strong>Auskunftsrecht</strong> (Art. 15 DSGVO)</li>
+        <li><strong>Recht auf Berichtigung</strong> (Art. 16 DSGVO)</li>
+        <li><strong>Recht auf Löschung</strong> (Art. 17 DSGVO)</li>
+        <li><strong>Recht auf Einschränkung der Verarbeitung</strong> (Art. 18 DSGVO)</li>
+        <li><strong>Recht auf Datenübertragbarkeit</strong> (Art. 20 DSGVO)</li>
+        <li><strong>Widerspruchsrecht</strong> (Art. 21 DSGVO)</li>
+        <li><strong>Recht auf Beschwerde</strong> bei einer Aufsichtsbehörde (Art. 77 DSGVO). Zuständig ist die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen, Kavalleriestraße 2-4, 40213 Düsseldorf.</li>
+      </ul>
+      <p>Zur Ausübung dieser Rechte wende dich formlos per E-Mail an: <a href="mailto:immoanalyse4@gmail.com">immoanalyse4@gmail.com</a></p>
+
+      <h4>10. Speicherdauer</h4>
+      <p>Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Bei Kontaktanfragen: bis zur Erledigung der Anfrage und anschließender Löschung. Bei Waitlist-Einträgen: bis zum Widerruf der Einwilligung bzw. bis zum offiziellen Launch und dem Versand der Launch-Benachrichtigung.</p>
+
+      <h4>11. Datensicherheit</h4>
+      <p>Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-/TLS-Verfahren in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von deinem Browser unterstützt wird.</p>
+
+      <h4>12. Aktualität und Änderung dieser Datenschutzerklärung</h4>
+      <p>Diese Datenschutzerklärung hat den Stand April 2026. Durch die Weiterentwicklung der Website oder aufgrund geänderter gesetzlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.</p>
+
+      <p style="margin-top:1.5rem;font-size:12.5px;color:var(--hint)">Stand: April 2026</p>
+    `
+  },
+
+  agb: {
+    title: 'Allgemeine Geschäftsbedingungen (AGB)',
+    html: `
+      ${LEGAL_WARNING}
+
+      <h4>§ 1 Geltungsbereich und Anbieter</h4>
+      <p>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge zwischen <span class="legal-placeholder">[Firmenname / Name]</span>, <span class="legal-placeholder">[Anschrift]</span> (nachfolgend „Anbieter") und dem Kunden über die Nutzung der kostenpflichtigen Funktionen der Software „ImmoDeal".</p>
+      <p>Abweichende Bedingungen des Kunden erkennen wir nur an, wenn wir ausdrücklich schriftlich zustimmen.</p>
+
+      <h4>§ 2 Leistungsbeschreibung</h4>
+      <p><strong>(1)</strong> ImmoDeal ist ein webbasiertes Analysewerkzeug, das auf Basis vom Kunden eingegebener Daten Kennzahlen, Cashflow-Berechnungen und eine strukturierte Einschätzung zu Immobilieninvestments ausgibt.</p>
+      <p><strong>(2) Keine Beratung:</strong> ImmoDeal erbringt ausdrücklich <strong>keine Anlageberatung, Anlagevermittlung, Steuer-, Rechts- oder Finanzberatung</strong> und ist keine individuelle Empfehlung zum Kauf oder Verkauf von Immobilien. Die Ergebnisse beruhen ausschließlich auf den Eingaben des Kunden und rein rechnerischen Modellen.</p>
+      <p><strong>(3)</strong> Die kostenlose Version stellt grundlegende Funktionen bereit. Gegen Einmalzahlung können die Pro- oder Premium-Funktionen freigeschaltet werden. Der Leistungsumfang ergibt sich aus der jeweiligen Produktbeschreibung auf der Website zum Zeitpunkt der Bestellung.</p>
+
+      <h4>§ 3 Vertragsschluss</h4>
+      <p><strong>(1)</strong> Die Darstellung der Leistungen auf der Website ist kein verbindliches Angebot, sondern eine Aufforderung zur Abgabe eines Angebots durch den Kunden.</p>
+      <p><strong>(2)</strong> Mit Klick auf den Bezahl-Button gibt der Kunde ein verbindliches Angebot ab. Der Vertrag kommt mit Annahme durch den Anbieter zustande, spätestens mit Bereitstellung der freigeschalteten Leistung.</p>
+      <p><strong>(3)</strong> Der Vertragstext wird vom Anbieter nicht gespeichert. Der Kunde wird gebeten, den Vertragstext (AGB, Bestellbestätigung) eigenständig zu sichern.</p>
+
+      <h4>§ 4 Preise und Zahlung</h4>
+      <p><strong>(1)</strong> Es gelten die zum Zeitpunkt der Bestellung auf der Website angegebenen Preise. Alle Preise verstehen sich in Euro inkl. gesetzlicher Umsatzsteuer <span class="legal-placeholder">[ggf. anpassen: Kleinunternehmerregelung § 19 UStG]</span>.</p>
+      <p><strong>(2)</strong> Die Zahlung erfolgt über den auf der Bestellseite angegebenen Zahlungsanbieter. Die Leistung wird nach Zahlungseingang freigeschaltet.</p>
+
+      <h4>§ 5 Widerrufsrecht / Verzicht auf Widerrufsrecht</h4>
+      <p>Verbraucher haben ein 14-tägiges Widerrufsrecht. Details siehe separate Widerrufsbelehrung.</p>
+      <p><strong>Hinweis:</strong> Bei digitalen Inhalten (wie der sofortigen Freischaltung von Pro-Funktionen) <strong>erlischt das Widerrufsrecht vorzeitig</strong>, wenn der Kunde ausdrücklich zugestimmt hat, dass mit der Ausführung vor Ablauf der Widerrufsfrist begonnen wird und bestätigt hat, sein Widerrufsrecht mit Vertragserfüllung zu verlieren (§ 356 Abs. 5 BGB).</p>
+
+      <h4>§ 6 Freiwillige Geld-zurück-Garantie</h4>
+      <p>Unabhängig vom gesetzlichen Widerrufsrecht gewährt der Anbieter eine freiwillige 14-tägige Geld-zurück-Garantie. Der Kunde kann innerhalb von 14 Tagen nach Freischaltung formlos per E-Mail an <span class="legal-placeholder">[deine@domain.de]</span> die vollständige Erstattung verlangen. Die Erstattung erfolgt innerhalb von 14 Tagen über den ursprünglichen Zahlungsweg. Mit Erstattung endet die Nutzungsberechtigung.</p>
+
+      <h4>§ 7 Nutzungsrechte</h4>
+      <p>Mit vollständiger Zahlung erhält der Kunde ein einfaches, nicht übertragbares, zeitlich auf die Laufzeit des gewählten Plans beschränktes Nutzungsrecht an der Software zum eigenen Gebrauch. Eine kommerzielle Weiterverbreitung, Weitergabe von Zugangsdaten oder Dritt-Nutzung ist nicht gestattet.</p>
+
+      <h4>§ 8 Haftung</h4>
+      <p><strong>(1)</strong> Der Anbieter haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit.</p>
+      <p><strong>(2)</strong> Bei leichter Fahrlässigkeit haftet der Anbieter nur bei Verletzung einer wesentlichen Vertragspflicht (Kardinalpflicht), deren Erfüllung die ordnungsgemäße Durchführung des Vertrages überhaupt erst ermöglicht und auf deren Einhaltung der Kunde regelmäßig vertrauen darf. Die Haftung ist in diesem Fall auf den bei Vertragsabschluss vorhersehbaren, vertragstypischen Schaden begrenzt.</p>
+      <p><strong>(3)</strong> Eine darüber hinausgehende Haftung ist ausgeschlossen. Insbesondere haftet der Anbieter <strong>nicht für Schäden, die durch Entscheidungen des Kunden auf Basis der mit ImmoDeal erstellten Analysen entstehen</strong>, z.B. Fehlkäufe, entgangene Gewinne, Finanzierungsschäden oder Folgeschäden. Die Analyse ist kein Ersatz für eine individuelle Beratung.</p>
+      <p><strong>(4)</strong> Die vorstehenden Haftungsbeschränkungen gelten auch zugunsten der gesetzlichen Vertreter und Erfüllungsgehilfen des Anbieters.</p>
+
+      <h4>§ 9 Verfügbarkeit</h4>
+      <p>Der Anbieter bemüht sich um eine hohe Verfügbarkeit der Website, schuldet diese aber nicht in einem bestimmten Umfang. Wartungsarbeiten, technische Störungen oder höhere Gewalt können zu vorübergehenden Nichtverfügbarkeiten führen.</p>
+
+      <h4>§ 10 Änderungen der AGB</h4>
+      <p>Der Anbieter behält sich vor, diese AGB mit Wirkung für die Zukunft zu ändern. Über Änderungen wird der Kunde rechtzeitig informiert. Wesentliche Änderungen bedürfen der Zustimmung.</p>
+
+      <h4>§ 11 Schlussbestimmungen</h4>
+      <p><strong>(1)</strong> Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Bei Verbrauchern gilt diese Rechtswahl nur, soweit nicht der gewährte Schutz durch zwingende Bestimmungen des Rechts des Staates, in dem der Verbraucher seinen gewöhnlichen Aufenthalt hat, entzogen wird.</p>
+      <p><strong>(2)</strong> Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt der Vertrag im Übrigen wirksam (salvatorische Klausel).</p>
+      <p><strong>(3)</strong> Erfüllungsort und – soweit gesetzlich zulässig – Gerichtsstand ist <span class="legal-placeholder">[Ort des Unternehmenssitzes]</span>.</p>
+
+      <p style="margin-top:1rem;font-size:12.5px;color:var(--hint)">Stand: <span class="legal-placeholder">[TT.MM.JJJJ]</span></p>
+    `
+  },
+
+  widerruf: {
+    title: 'Widerrufsbelehrung',
+    html: `
+      ${LEGAL_WARNING}
+
+      <h4>Widerrufsrecht</h4>
+      <p>Du hast das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsabschlusses.</p>
+      <p>Um dein Widerrufsrecht auszuüben, musst du uns</p>
+      <p>
+        <span class="legal-placeholder">[Firmenname / Name]</span><br>
+        <span class="legal-placeholder">[Anschrift]</span><br>
+        E-Mail: <span class="legal-placeholder">[deine@domain.de]</span><br>
+        Telefon: <span class="legal-placeholder">[Telefonnummer – optional]</span>
+      </p>
+      <p>mittels einer eindeutigen Erklärung (z.B. ein mit der Post versandter Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Du kannst dafür das unten angefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
+      <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass du die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absendest.</p>
+
+      <h4>Folgen des Widerrufs</h4>
+      <p>Wenn du diesen Vertrag widerrufst, haben wir dir alle Zahlungen, die wir von dir erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über deinen Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Transaktion eingesetzt hast, es sei denn, mit dir wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden dir wegen dieser Rückzahlung Entgelte berechnet.</p>
+
+      <h4>Besondere Hinweise bei digitalen Inhalten</h4>
+      <p><strong>Vorzeitiges Erlöschen des Widerrufsrechts:</strong> Dein Widerrufsrecht erlischt bei einem Vertrag zur Lieferung von nicht auf einem körperlichen Datenträger befindlichen digitalen Inhalten (wie der sofortigen Freischaltung von Pro-Funktionen), wenn du</p>
+      <ul>
+        <li>ausdrücklich zustimmst, dass wir mit der Ausführung des Vertrags vor Ablauf der Widerrufsfrist beginnen, und</li>
+        <li>bestätigst, dass du dadurch dein Widerrufsrecht mit Beginn der Vertragsausführung verlierst (§ 356 Abs. 5 BGB).</li>
+      </ul>
+      <p>Unabhängig davon gilt die freiwillige 14-tägige Geld-zurück-Garantie nach § 6 AGB.</p>
+
+      <h4>Muster-Widerrufsformular</h4>
+      <p>Wenn du den Vertrag widerrufen möchtest, kannst du dieses Formular ausfüllen und zurücksenden:</p>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.5rem 0">
+        <p style="color:var(--text);font-size:13.5px;line-height:1.7;margin-bottom:.5rem">
+          An <span class="legal-placeholder">[Firmenname / Name, Anschrift, E-Mail]</span>:<br><br>
+          Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Ware (*) / die Erbringung der folgenden Dienstleistung (*):<br><br>
+          Bestellt am (*) / erhalten am (*):<br>
+          Name des/der Verbraucher(s):<br>
+          Anschrift des/der Verbraucher(s):<br>
+          Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier):<br>
+          Datum:<br><br>
+          (*) Unzutreffendes streichen.
+        </p>
+      </div>
+    `
+  },
+
+  haftung: {
+    title: 'Haftungsausschluss',
+    html: `
+      <div class="legal-warning" style="background:#fdf0ee;border-color:#e4b0a8;color:#7c2d12">
+        <strong>Wichtig für den Nutzer:</strong> ImmoDeal stellt ein reines Analysewerkzeug dar. Die Ergebnisse sind <strong>keine Anlageberatung, keine Kaufempfehlung und kein Ersatz für eine individuelle Prüfung durch qualifizierte Fachleute</strong>. Jede Entscheidung, insbesondere der Erwerb oder die Finanzierung einer Immobilie, erfolgt eigenverantwortlich.
+      </div>
+
+      <h4>1. Keine Anlage- oder Finanzberatung</h4>
+      <p>ImmoDeal ist ein softwarebasiertes Werkzeug zur rechnerischen Analyse von Immobilien auf Basis der vom Nutzer eingegebenen Daten. Die bereitgestellten Kennzahlen, Ampeln, Empfehlungen und Szenarien sind <strong>keine individuelle Anlageberatung, keine Anlagevermittlung, keine Steuerberatung, keine Rechtsberatung und keine Finanzierungsberatung</strong> im Sinne des Kreditwesengesetzes (KWG), des Wertpapierhandelsgesetzes (WpHG), des Steuerberatungsgesetzes oder des Rechtsdienstleistungsgesetzes (RDG).</p>
+      <p>Die Software ersetzt nicht die Prüfung durch qualifizierte Fachleute (Steuerberater, Rechtsanwalt, unabhängiger Finanzberater, Gutachter).</p>
+
+      <h4>2. Grundlage der Berechnungen</h4>
+      <p>Sämtliche Ergebnisse beruhen ausschließlich auf den vom Nutzer selbst eingegebenen Daten sowie auf allgemeinen, vereinfachten Berechnungsmodellen. Wir übernehmen <strong>keine Gewähr</strong> für:</p>
+      <ul>
+        <li>die Richtigkeit, Vollständigkeit oder Aktualität der Eingabedaten des Nutzers,</li>
+        <li>die Übereinstimmung der verwendeten Berechnungsmodelle mit der individuellen Situation des Nutzers,</li>
+        <li>künftige Marktentwicklungen, Zinsänderungen, Mietentwicklungen oder steuerliche Änderungen,</li>
+        <li>die Erreichbarkeit der prognostizierten Renditen, Cashflows oder sonstigen Kennzahlen.</li>
+      </ul>
+
+      <h4>3. Eigene Verantwortung des Nutzers</h4>
+      <p>Jede Entscheidung auf Basis der Analyseergebnisse – insbesondere der Kauf, die Finanzierung oder die Veräußerung einer Immobilie – erfolgt <strong>ausschließlich in eigener Verantwortung und auf eigenes Risiko</strong> des Nutzers. Der Nutzer ist verpflichtet, vor einer solchen Entscheidung:</p>
+      <ul>
+        <li>die Plausibilität der Analyseergebnisse eigenständig zu prüfen,</li>
+        <li>eine unabhängige Fachberatung einzuholen (Steuerberater, Rechtsanwalt, Finanzberater),</li>
+        <li>alle rechtlichen, steuerlichen und wirtschaftlichen Aspekte individuell zu bewerten.</li>
+      </ul>
+
+      <h4>4. Haftungsbeschränkung</h4>
+      <p><strong>(1)</strong> Wir haften nach den gesetzlichen Bestimmungen bei Vorsatz und grober Fahrlässigkeit, bei arglistig verschwiegenen Mängeln, bei Übernahme einer Garantie sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit.</p>
+      <p><strong>(2)</strong> Bei leichter Fahrlässigkeit haften wir nur bei Verletzung einer wesentlichen Vertragspflicht (Kardinalpflicht). Die Haftung ist in diesem Fall auf den bei Vertragsabschluss vorhersehbaren, vertragstypischen Schaden begrenzt.</p>
+      <p><strong>(3)</strong> Eine darüber hinausgehende Haftung – insbesondere für</p>
+      <ul>
+        <li>finanzielle Fehlentscheidungen des Nutzers,</li>
+        <li>Fehlkäufe von Immobilien,</li>
+        <li>entgangene Gewinne oder Renditen,</li>
+        <li>Finanzierungsschäden, höhere Zinskosten oder Wertverluste,</li>
+        <li>mittelbare Schäden und Folgeschäden,</li>
+      </ul>
+      <p>ist – soweit gesetzlich zulässig – <strong>ausdrücklich ausgeschlossen</strong>.</p>
+      <p><strong>(4)</strong> Die vorstehenden Haftungsbeschränkungen gelten auch zugunsten unserer gesetzlichen Vertreter und Erfüllungsgehilfen.</p>
+
+      <h4>5. Keine Garantie für Verfügbarkeit und Fehlerfreiheit</h4>
+      <p>Wir bemühen uns um eine hohe Verfügbarkeit, Funktionsfähigkeit und Fehlerfreiheit der Software. Eine ständige, ununterbrochene Verfügbarkeit oder vollständige Fehlerfreiheit können wir technisch nicht garantieren. Wartungen, Updates, höhere Gewalt oder technische Störungen können zu vorübergehenden Einschränkungen führen.</p>
+
+      <h4>6. Links zu externen Websites</h4>
+      <p>Soweit auf dieser Website Links zu externen Websites gesetzt sind, übernehmen wir keine Haftung für deren Inhalte. Für die Inhalte der verlinkten Seiten ist ausschließlich deren Betreiber verantwortlich.</p>
+
+      <h4>7. Rechtliche Hinweise bleiben unberührt</h4>
+      <p>Zwingende gesetzliche Haftungstatbestände – etwa nach dem Produkthaftungsgesetz – bleiben von den vorstehenden Regelungen unberührt.</p>
+    `
+  }
+};
+
+function showLegal(type='impressum'){
+  const title = G('legal-title');
+  const content = G('legal-content');
+  const entry = LEGAL_CONTENT[type] || LEGAL_CONTENT.impressum;
+  if(title) title.textContent = entry.title;
+  if(content){
+    // Tabs oben einbauen
+    const tabs = `
+      <div class="legal-tabs">
+        <button class="legal-tab ${type==='impressum'?'on':''}" onclick="showLegal('impressum')">Impressum</button>
+        <button class="legal-tab ${type==='datenschutz'?'on':''}" onclick="showLegal('datenschutz')">Datenschutz</button>
+        <button class="legal-tab ${type==='haftung'?'on':''}" onclick="showLegal('haftung')">Haftungsausschluss</button>
+      </div>`;
+    content.innerHTML = tabs + entry.html;
+    // nach oben scrollen
+    const panel = content.closest('.legal-panel');
+    if(panel) panel.scrollTop = 0;
+  }
+  G('legal-modal')?.classList.add('show');
+  G('legal-modal')?.setAttribute('aria-hidden','false');
+}
+
+function closeLegal(){
+  G('legal-modal')?.classList.remove('show');
+  G('legal-modal')?.setAttribute('aria-hidden','true');
+}
+
+function copySummary(){
+  const r = calc();
+  const text = `ImmoDeal Ergebnis: ${r.emp} | Score ${r.score}/14 | Cashflow ${fE(r.mcfIst,0)}/Mon. | Nettorendite ${fP(r.nettR)} | DSCR ${fmt(r.dscr,2)} | Kaufpreisfaktor ${fmt(r.faktor,1)}x`;
+  navigator.clipboard?.writeText(text).then(()=>showToast('Kurzfazit in die Zwischenablage kopiert.'));
+}
+
+function exportPDF(){
+  // BETA: alle Funktionen kostenlos, aber wir fragen einmal ob aktiviert
+  if(!isProMode){
+    setProMode(true);
+    showToast('✓ Pro-Funktionen in der Beta freigeschaltet.');
+    setTimeout(openPdfModal, 300);
+    return;
+  }
+  openPdfModal();
+}
+
+// ============================================================
+//  PDF MODAL – schönes Overlay mit Live-Vorschau
+// ============================================================
+function openPdfModal(){
+  updatePdfPreview();
+  const modal = G('pdf-modal');
+  modal?.classList.add('show');
+  modal?.setAttribute('aria-hidden','false');
+  const lockedNote = G('pdf-locked-note');
+  const exportBtn = G('pdf-export-btn');
+  if(lockedNote && exportBtn){
+    // Beta: immer freigeschaltet anzeigen
+    lockedNote.style.display='none';
+    exportBtn.textContent='⬇ Als PDF speichern';
+    exportBtn.onclick = executePdfExport;
+  }
+}
+function closePdfModal(){
+  const modal = G('pdf-modal');
+  modal?.classList.remove('show');
+  modal?.setAttribute('aria-hidden','true');
+}
+function updatePdfPreview(){
+  const r = calc();
+  const kp = fv('f_kaufpreis');
+  const ort = sv('f_ort') || '–';
+  const objektart = sv('f_objektart') || 'Objekt';
+  G('pdf-mini-sub').textContent = `${objektart} · ${ort} · ${fE(kp)}`;
+  G('pdf-mini-emp').textContent = r.emp;
+  G('pdf-mini-score').textContent = r.score;
+  G('pdf-mini-cf').textContent = (r.mcfIst>=0?'+':'')+fE(Math.round(r.mcfIst));
+  G('pdf-mini-rent').textContent = fP(r.nettR);
+  G('pdf-mini-faktor').textContent = fmt(r.faktor,1)+'x';
+  G('pdf-mini-dscr').textContent = fmt(r.dscr,2);
+  G('pdf-mini-date').textContent = new Date().toLocaleDateString('de-DE');
+
+  // Farbe der Verdict-Box in der Mini-PDF anpassen
+  const verdictBox = G('pdf-mini-verdict');
+  const empEl = G('pdf-mini-emp');
+  if(verdictBox && empEl){
+    if(r.emp==='Kaufen'){
+      verdictBox.style.background='#eaf7f0'; empEl.style.color='#1c7a4b';
+    } else if(r.emp==='Mit Vorsicht prüfen'){
+      verdictBox.style.background='#fef8e6'; empEl.style.color='#7a5c00';
+    } else {
+      verdictBox.style.background='#fdf0ee'; empEl.style.color='#b83228';
+    }
+  }
+}
+function executePdfExport(){
+  const r   = calc();
+  const ort = sv('f_ort')      || '–';
+  const typ = sv('f_objektart')|| sv('f_typ') || 'Immobilie';
+  const zustand = sv('f_zustand') || '';
+  const lage    = sv('f_lage')    || '';
+  const kp   = fv('f_kaufpreis');
+  const wfl  = fv('f_wfl');
+  const bj   = fv('f_baujahr');
+  const zins = fv('f_zins');
+  const tilg = fv('f_tilgung');
+  const zinsbind = fv('f_zinsbind');
+  const ek   = fv('f_ek');
+  const km   = fv('f_kaltmiete');
+  const mm   = fv('f_marktmiete');
+  const ls   = fv('f_leerstand');
+  const ins  = fv('f_instand');
+  const gest = fv('f_gest');
+  const notar= fv('f_notar');
+  const makler=fv('f_makler');
+  const date = new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  // Checkbox-Optionen auslesen
+  const showVerdict   = G('pdf-opt-verdict')?.checked   ?? true;
+  const showKpi       = G('pdf-opt-kpi')?.checked       ?? true;
+  const showAmpel     = G('pdf-opt-ampel')?.checked     ?? true;
+  const showScenarios = G('pdf-opt-scenarios')?.checked ?? true;
+  const aC = a => a==='G'?'#1c7a4b':a==='Y'?'#92650a':'#b83228';
+  const aBg= a => a==='G'?'#eaf7f0':a==='Y'?'#fef8e6':'#fdf0ee';
+  const aSym=a => a==='G'?'✓':a==='Y'?'~':'✗';
+  const empC = r.emp==='Kaufen'?'#1c7a4b':r.emp==='Mit Vorsicht prüfen'?'#92650a':'#b83228';
+  const empBg= r.emp==='Kaufen'?'#eaf7f0':r.emp==='Mit Vorsicht prüfen'?'#fef8e6':'#fdf0ee';
+
+  // KI-Szenarien
+  const kiCards=[];
+  document.querySelectorAll('#ki-scenarios-grid .ki-scenario-card').forEach(el=>{
+    const label =el.querySelector('.ki-scenario-label')?.textContent?.trim()||'';
+    const title =el.querySelector('.ki-scenario-title')?.textContent?.trim()||'';
+    const body  =el.querySelector('.ki-scenario-body')?.textContent?.trim()||'';
+    const metric=el.querySelector('.ki-scenario-metric')?.textContent?.trim()||'';
+    if(title&&title!=='—') kiCards.push({label,title,body,metric});
+  });
+  const kiVerdict=G('ki-verdict-box')?.textContent?.trim()||'';
+  const kiOptionen=[];
+  document.querySelectorAll('#ki-optionen-list .ki-option').forEach((el,i)=>{
+    const t=el.querySelector('.ki-option-title')?.textContent?.trim()||'';
+    const b=el.querySelector('.ki-option-body')?.textContent?.trim()||'';
+    const tag=el.querySelector('.ki-option-tag')?.textContent?.trim()||'';
+    if(t) kiOptionen.push({t,b,tag,letter:String.fromCharCode(65+i)});
+  });
+
+  const row=(l,v,bold=false)=>`
+    <tr>
+      <td style="padding:5px 8px;color:#555;font-size:9pt;border-bottom:1px solid #f0f0f0;width:50%">${l}</td>
+      <td style="padding:5px 8px;font-size:9pt;font-weight:${bold?700:500};border-bottom:1px solid #f0f0f0;text-align:right">${v}</td>
+    </tr>`;
+
+  const section=(title,content)=>`
+    <div style="margin-bottom:22px">
+      <div style="font-size:8pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e0e0e0">${title}</div>
+      ${content}
+    </div>`;
+
+  const html=`<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>ImmoDeal Analyse – ${typ} ${ort}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:10pt;color:#1a1a1a;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4;margin:1.8cm 1.8cm 2cm 1.8cm}
+  @media print{.pagebreak{page-break-before:always}}
+  table{width:100%;border-collapse:collapse}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+</style>
+</head>
+<body style="padding:0">
+
+<!-- DECKBLATT-HEADER -->
+<div style="background:#111;color:#fff;padding:22px 24px 18px;margin-bottom:20px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div>
+      <div style="font-size:11pt;font-weight:800;letter-spacing:-.3px;margin-bottom:2px">ImmoDeal</div>
+      <div style="font-size:8pt;color:#aaa">Immobilienanalyse-Report</div>
+    </div>
+    <div style="text-align:right;font-size:8.5pt;color:#ccc">
+      <div>${date}</div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid #333">
+    <div style="font-size:16pt;font-weight:700;margin-bottom:3px">${typ} · ${ort}</div>
+    <div style="font-size:9pt;color:#ccc">
+      ${wfl>0?wfl+' m²':''}${bj>0?' · Baujahr '+bj:''}${zustand?' · '+zustand:''}${lage?' · Lage: '+lage:''}
+    </div>
+  </div>
+</div>
+
+<div style="padding:0 24px">
+
+${showVerdict ? `
+<!-- EMPFEHLUNG -->
+<div style="background:${empBg};border-left:4px solid ${empC};padding:14px 16px;margin-bottom:20px;border-radius:0 5px 5px 0">` : `<div style="display:none">`}
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-size:8pt;color:#777;margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Gesamtempfehlung</div>
+      <div style="font-size:18pt;font-weight:800;color:${empC}">${r.emp}</div>
+      <div style="font-size:8.5pt;color:#555;margin-top:4px;max-width:400px">${r.empTxt}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:8pt;color:#888;margin-bottom:4px">Score</div>
+      <div style="font-size:28pt;font-weight:800;color:${empC};line-height:1">${r.score}</div>
+      <div style="font-size:8pt;color:#888">von 14</div>
+    </div>
+  </div>
+</div>
+
+<!-- KAUFPREIS & FINANZIERUNG -->
+${showKpi?section('Objekt & Kaufpreis', `
+<div class="two-col">
+  <table style="background:#fafafa;border-radius:5px">
+    ${row('Kaufpreis', fE(kp), true)}
+    ${row('Wohnfläche', wfl>0?wfl+' m²':'–')}
+    ${wfl>0&&kp>0?row('Preis pro m²', fE(Math.round(kp/wfl))):''}
+    ${bj>0?row('Baujahr', bj+' ('+Math.max(0,new Date().getFullYear()-bj)+' Jahre)'):''}
+    ${row('Kaufnebenkosten', fE(Math.round(r.nkEur))+' ('+fmt(r.nkPct*100,1)+' %)')}
+    ${row('Gesamtinvestition', fE(Math.round(r.gesinvC)), true)}
+  </table>
+  <table style="background:#fafafa;border-radius:5px">
+    ${row('Eigenkapital', fE(ek), true)}
+    ${row('Darlehen', fE(Math.round(r.darlehen)))}
+    ${row('Zinssatz', fmt(zins,2)+' %')}
+    ${row('Tilgung', fmt(tilg,2)+' %')}
+    ${zinsbind>0?row('Zinsbindung', zinsbind+' Jahre'):''}
+    ${row('Monatliche Rate', fE(Math.round(r.rateM)), true)}
+  </table>
+</div>`):''} 
+
+<!-- CASHFLOW & RENDITE -->
+${showKpi?section('Cashflow & Rendite', `
+<div class="two-col">
+  <table style="background:#fafafa;border-radius:5px">
+    ${row('Kaltmiete (Ist)', fE(km)+'/Mon')}
+    ${mm>0?row('Marktmiete (Soll)', fE(mm)+'/Mon'):''}
+    ${row('Jahresmiete (Ist)', fE(Math.round(r.jkmIst)))}
+    ${row('Leerstandsquote', fmt(ls,1)+' %')}
+    ${row('Betriebskosten p.a.', fE(Math.round(r.betrKPA)))}
+    ${row('Monatl. Cashflow (Ist)', (r.mcfIst>=0?'+':'')+fE(Math.round(r.mcfIst)), true)}
+    ${mm>km?row('Cashflow mit Marktmiete', (r.mcfPot>=0?'+':'')+fE(Math.round(r.mcfPot))):''}
+  </table>
+  <table style="background:#fafafa;border-radius:5px">
+    ${row('Bruttorendite', fmt(r.brutR*100,2)+' %')}
+    ${row('Nettorendite', fmt(r.nettR*100,2)+' %', true)}
+    ${row('EK-Rendite', fmt(r.ekR*100,2)+' %')}
+    ${row('Kaufpreisfaktor', fmt(r.faktor,1)+'x', true)}
+    ${row('DSCR', fmt(r.dscr,2))}
+    ${row('LTV (Beleihungsauslauf)', fmt(r.ltv*100,1)+' %')}
+    ${row('Break-Even Miete', fE(Math.round(r.beM))+'/Mon')}
+  </table>
+</div>`):''} 
+
+<!-- AMPEL-CHECK -->
+${showAmpel?section('Ampel-Check', `
+<div class="two-col">
+  ${[
+    ['Cashflow',      r.cfA,   (r.mcfIst>=0?'+':'')+fE(Math.round(r.mcfIst))+'/Mon'],
+    ['Nettorendite',  r.rentA, fmt(r.nettR*100,2)+' %'],
+    ['Kaufpreisfaktor',r.faktA,fmt(r.faktor,1)+'x'],
+    ['DSCR',          r.dscrA, fmt(r.dscr,2)],
+    ['EK-Rendite',    r.ekrA,  fmt(r.ekR*100,2)+' %'],
+  ].map(([l,a,v])=>`
+  <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:${aBg(a)};border-radius:5px;border-left:3px solid ${aC(a)}">
+    <span style="font-size:12pt;color:${aC(a)};font-weight:700;width:18px">${aSym(a)}</span>
+    <span style="flex:1;font-size:9pt">${l}</span>
+    <span style="font-size:9pt;font-weight:700">${v}</span>
+  </div>`).join('')}
+</div>`):''} 
+
+<!-- PRÜFPUNKTE & CHANCEN -->
+${(r.pruef.length>0||r.chancen.length>0)?section('Prüfpunkte & Chancen', `
+<div class="two-col">
+  <div>
+    <div style="font-size:8pt;font-weight:700;color:#b83228;margin-bottom:6px">⚠ Prüfpunkte</div>
+    ${r.pruef.length>0?r.pruef.map(p=>`<div style="font-size:8.5pt;color:#444;padding:4px 0;border-bottom:1px solid #f0f0f0;line-height:1.4">${p}</div>`).join(''):'<div style="font-size:8.5pt;color:#888">Keine Auffälligkeiten</div>'}
+  </div>
+  <div>
+    <div style="font-size:8pt;font-weight:700;color:#1c7a4b;margin-bottom:6px">✓ Chancen</div>
+    ${r.chancen.map(c=>`<div style="font-size:8.5pt;color:#444;padding:4px 0;border-bottom:1px solid #f0f0f0;line-height:1.4">${c}</div>`).join('')}
+  </div>
+</div>`):''}
+
+${kiCards.length>0&&showScenarios?`
+<!-- KI-SZENARIEN -->
+<div class="pagebreak"></div>
+${section('KI-Szenarien', `
+<div class="${kiCards.length>=4?'two-col':'three-col'}" style="margin-bottom:12px">
+  ${kiCards.map(sc=>`
+  <div style="border:1px solid #e0e0e0;border-radius:5px;padding:10px 12px">
+    <div style="font-size:7.5pt;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:4px">${sc.label}</div>
+    <div style="font-size:9.5pt;font-weight:700;margin-bottom:5px;line-height:1.3">${sc.title}</div>
+    <div style="font-size:8.5pt;color:#555;line-height:1.5;margin-bottom:6px">${sc.body}</div>
+    ${sc.metric?`<span style="font-size:8pt;font-weight:600;background:#f0f0f0;padding:2px 8px;border-radius:3px">${sc.metric}</span>`:''}
+  </div>`).join('')}
+</div>
+${kiVerdict?`<div style="background:#f9f9f9;border-left:3px solid #ccc;padding:10px 14px;font-size:9pt;color:#444;line-height:1.6;border-radius:0 5px 5px 0">${kiVerdict}</div>`:''}`)}
+
+${kiOptionen.length>0?section('Handlungsoptionen', `
+<div style="display:flex;flex-direction:column;gap:6px">
+  ${kiOptionen.map(o=>`
+  <div style="display:flex;gap:12px;padding:9px 12px;border:1px solid #e8e8e8;border-radius:5px">
+    <div style="font-size:10pt;font-weight:800;color:#555;width:20px;flex-shrink:0">Option ${o.letter}</div>
+    <div style="flex:1">
+      <div style="font-size:9pt;font-weight:700;margin-bottom:3px">${o.t}</div>
+      <div style="font-size:8.5pt;color:#555;line-height:1.5">${o.b}</div>
+      ${o.tag?`<div style="font-size:8pt;font-weight:600;color:#555;margin-top:4px">→ ${o.tag}</div>`:''}
+    </div>
+  </div>`).join('')}
+</div>`):''}
+`:''}
+
+<!-- NÄCHSTER SCHRITT -->
+${section('Nächster Schritt', `
+<div style="background:#f5f5f5;padding:10px 14px;border-radius:5px;font-size:9pt;color:#333">${r.nextStep}</div>`)}
+
+</div><!-- /padding -->
+
+<!-- FOOTER -->
+<div style="margin:20px 24px 0;padding:10px 0;border-top:1px solid #e0e0e0;display:flex;justify-content:space-between;font-size:7.5pt;color:#aaa">
+  <span>ImmoDeal · immodeal.de · Analysiert am ${date}</span>
+  <span>Kein Anlageberatungsersatz · Alle Angaben ohne Gewähr</span>
+</div>
+<div style="margin:6px 24px 20px;font-size:7pt;color:#bbb;line-height:1.5">
+  Dieser Report ist ein rechnerisches Analysewerkzeug und stellt keine Anlage-, Immobilien- oder Finanzberatung dar. Für verbindliche Entscheidungen empfehlen wir einen unabhängigen Finanz- oder Immobilienberater.
+</div>
+
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  const win=window.open('','_blank');
+  if(win){win.document.write(html);win.document.close();}
+  else showToast('Popups blockiert — bitte für diese Seite erlauben.');
+  closePdfModal();
+}
+// ============================================================
+//  REVIEWS – LocalStorage-basiert
+// ============================================================
+const REVIEWS_KEY = 'immodeal_reviews_v1';
+const DEFAULT_REVIEWS = [];  // Keine voreingestellten Reviews — nur echtes Nutzerfeedback
+
+function getStoredReviews(){
+  try{
+    const raw = localStorage.getItem(REVIEWS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch{ return []; }
+}
+function saveStoredReview(rev){
+  const list = getStoredReviews();
+  list.unshift(rev);
+  try{ localStorage.setItem(REVIEWS_KEY, JSON.stringify(list)); }catch{}
+}
+function getAllReviews(){
+  return [...getStoredReviews(), ...DEFAULT_REVIEWS];
+}
+function renderReviews(){
+  const grid = G('reviews-grid');
+  if(!grid) return;
+  const reviews = getAllReviews();
+  const hint = G('no-reviews-hint');
+
+  // Zeige/verstecke "Noch keine Bewertungen"-Hinweis
+  if(hint) hint.style.display = reviews.length === 0 ? 'block' : 'none';
+
+  // Durchschnitt & Anzahl
+  const avg = reviews.reduce((s,r)=>s+r.rating,0) / (reviews.length || 1);
+  const avgEl = G('review-avg');
+  const countEl = G('review-count');
+  if(avgEl) avgEl.textContent = avg.toFixed(1).replace('.',',');
+  if(countEl) countEl.textContent = `aus ${reviews.length} Bewertungen`;
+
+  grid.innerHTML = reviews.slice(0,5).map(r=>{
+    const initials = r.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    return `
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-author">
+            <div class="review-avatar" style="background:${r.color || '#1a3fa0'}">${initials}</div>
+            <div>
+              <div class="review-name">${escapeHtml(r.name)}</div>
+              <div class="review-date">${escapeHtml(r.date)}</div>
+            </div>
+          </div>
+          <div class="review-stars">${stars}</div>
+        </div>
+        <div class="review-text">${escapeHtml(r.text)}</div>
+        ${r.verified ? '<div class="review-verified">✓ Verifizierter Nutzer</div>' : ''}
+      </div>`;
+  }).join('');
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let selectedStars = 0;
+function toggleReviewForm(){
+  const form = G('review-form');
+  const label = G('review-toggle-label');
+  if(!form) return;
+  const isOpen = form.style.display !== 'none';
+  form.style.display = isOpen ? 'none' : 'block';
+  if(label) label.textContent = isOpen ? '✍️ Eigene Bewertung abgeben' : 'Formular schließen';
+  if(!isOpen){
+    selectedStars = 0;
+    updateStarPicker();
+  }
+}
+function initStarPicker(){
+  const picker = G('star-picker');
+  if(!picker) return;
+  picker.querySelectorAll('span').forEach(star=>{
+    star.addEventListener('click', ()=>{
+      selectedStars = parseInt(star.dataset.val);
+      updateStarPicker();
+    });
+  });
+}
+function updateStarPicker(){
+  const picker = G('star-picker');
+  if(!picker) return;
+  picker.querySelectorAll('span').forEach(star=>{
+    const val = parseInt(star.dataset.val);
+    star.classList.toggle('active', val <= selectedStars);
+  });
+}
+function submitReview(){
+  const name = G('rev-name').value.trim();
+  const text = G('rev-text').value.trim();
+  if(selectedStars === 0){ showToast('Bitte wähle zuerst eine Sternebewertung.'); return; }
+  if(!name){ showToast('Bitte gib deinen Namen an.'); return; }
+  if(text.length < 10){ showToast('Bitte schreibe einen kurzen Erfahrungsbericht.'); return; }
+  const colors = ['#1a3fa0','#1c7a4b','#b83228','#7a5c00','#c9a96e','#4a72d4','#8b5cf6','#dc2626'];
+  const newRev = {
+    name,
+    rating: selectedStars,
+    text,
+    date: 'gerade eben',
+    verified: false,
+    color: colors[Math.floor(Math.random()*colors.length)]
+  };
+  saveStoredReview(newRev);
+  renderReviews();
+  G('rev-name').value = '';
+  G('rev-text').value = '';
+  selectedStars = 0;
+  toggleReviewForm();
+  showToast('✓ Danke für deine Bewertung!');
+}
+
+// ============================================================
+//  FAQ TOGGLE
+// ============================================================
+function toggleFaq(el){
+  el.closest('.faq-item')?.classList.toggle('open');
+}
+
+// ============================================================
+//  STICKY CTA – zeigt sich nach Erreichen der Ergebnisseite
+// ============================================================
+const STICKY_DISMISSED_KEY = 'immodeal_sticky_dismissed';
+function maybeShowStickyCta(){
+  if(isProMode) return;
+  if(sessionStorage.getItem(STICKY_DISMISSED_KEY)==='1') return;
+  if(currentPage !== 4) return;
+  setTimeout(()=>{
+    const cta = G('sticky-cta');
+    if(cta && !isProMode) cta.classList.add('show');
+  }, 4000);
+}
+function hideStickyCta(){
+  G('sticky-cta')?.classList.remove('show');
+  sessionStorage.setItem(STICKY_DISMISSED_KEY, '1');
+}
+
+// ============================================================
+//  COUNTDOWN – erzeugt künstliche Dringlichkeit (48h-Session)
+// ============================================================
+function startCountdown(){
+  const el = G('launch-countdown');
+  if(!el) return;
+  let endTs = parseInt(sessionStorage.getItem('immodeal_countdown_end') || '0');
+  if(!endTs || endTs < Date.now()){
+    endTs = Date.now() + 48*3600*1000; // 48h
+    sessionStorage.setItem('immodeal_countdown_end', String(endTs));
+  }
+  function tick(){
+    const diff = endTs - Date.now();
+    if(diff <= 0){ el.textContent = 'endet bald'; return; }
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    el.textContent = `${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ============================================================
+//  LIVE-COUNTER – Analyse-Zähler animiert hoch
+// ============================================================
+function animateAnalysesCounter(){ /* deaktiviert — keine Fake-Zahlen */ }
+
+document.addEventListener('click', e=>{
+  if(e.target?.id === 'checkout-modal') closeCheckout();
+  if(e.target?.id === 'legal-modal') closeLegal();
+  if(e.target?.id === 'pdf-modal') closePdfModal();
+});
+
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){
+    closeCheckout();
+    closeLegal();
+    closePdfModal();
+    closeMobNav();
+  }
+});
+
+// ============================================================
+//  MOBILE NAVIGATION - simple & bulletproof
+// ============================================================
+function openMobNav(){
+  try{
+    var nav = document.getElementById('mob-nav');
+    var btn = document.getElementById('mob-menu-btn');
+    if(!nav){ console.warn('mob-nav not found'); return; }
+    nav.classList.add('is-open');
+    if(btn){
+      btn.classList.add('is-open');
+      btn.setAttribute('aria-label','Menü schließen');
+    }
+    document.body.style.overflow = 'hidden';
+  } catch(e){ console.error('openMobNav error:', e); }
+}
+function closeMobNav(){
+  try{
+    var nav = document.getElementById('mob-nav');
+    var btn = document.getElementById('mob-menu-btn');
+    if(nav) nav.classList.remove('is-open');
+    if(btn){
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-label','Menü öffnen');
+    }
+    document.body.style.overflow = '';
+  } catch(e){ console.error('closeMobNav error:', e); }
+}
+function toggleMobNav(){
+  var nav = document.getElementById('mob-nav');
+  if(nav && nav.classList.contains('is-open')) closeMobNav();
+  else openMobNav();
+}
+// Outside-click handler removed: was causing menu to close immediately on some mobile browsers
+// User closes menu via the × button or by tapping a menu link
+// Close on window resize to desktop
+window.addEventListener('resize', function(){
+  if(window.innerWidth > 768) closeMobNav();
+});
+
+// ============================================================
+//  INIT
+// ============================================================
+restoreForm();
+attachFieldHelpers();
+updateSteps();
+updatePageStatus();
+updateFinPrev();
+
+let isProMode = true; // Beta: immer alle Funktionen freigeschaltet
+
+function setProMode(value){
+  isProMode = !!value;
+  updateProUI();
+  const badge = G('header-badge');
+  if(badge) badge.textContent = isProMode ? 'Beta · Pro aktiv' : 'Beta · Kostenlos';
+  if(currentPage===4) renderResults();
+  showToast(isProMode ? '🎁 Alle Pro-Funktionen in der Beta aktiviert.' : 'Pro-Bereiche ausgeblendet.');
+}
+
+function updateProUI(){
+  document.querySelectorAll('.pro-only').forEach(el=>{
+    el.classList.toggle('pro-hidden', !isProMode);
+  });
+  document.querySelectorAll('.pro-only-pane').forEach(el=>{
+    el.classList.toggle('pro-hidden', !isProMode);
+  });
+
+  const scenarioBlur = G('scenario-blur');
+  const scenarioPaywall = G('scenario-paywall');
+  if(scenarioBlur) scenarioBlur.classList.toggle('paywall-blur', !isProMode);
+  if(scenarioPaywall) scenarioPaywall.classList.toggle('pro-hidden', isProMode);
+
+  if(!isProMode){
+    const activeTab = document.querySelector('.tab.on');
+    if(activeTab && activeTab.classList.contains('pro-only')){
+      showTab('kpi', document.querySelector('.tab'));
+    }
+  }
+}
+
+const _showTabOriginal = typeof showTab === 'function' ? showTab : null;
+
+
+(function(){
+  const originalShowTab = showTab;
+  if (typeof originalShowTab === 'function') {
+    showTab = function(name, el){
+      if(!isProMode && (name === 'ampel' || name === 'kcheck')){
+        // BETA-Modus: Pro direkt freischalten (kostenlos)
+        setProMode(true);
+        showToast('🎁 In der Beta kostenlos freigeschaltet.');
+        setTimeout(()=>originalShowTab(name, el), 300);
+        return;
+      }
+      originalShowTab(name, el);
+    }
+  }
+
+  const originalRenderResults = renderResults;
+  if (typeof originalRenderResults === 'function') {
+    renderResults = function(){
+      originalRenderResults();
+      const scDesc = G('sc-desc');
+      if(scDesc && !isProMode){
+        scDesc.innerHTML = 'Kostenlos sichtbar: alle Kennzahlen, Cashflow sowie je zwei Chancen und Prüfpunkte. <span class="pro-chip">Pro: Empfehlung · Ampel-Check · Kaufen-Check · Szenarien · PDF</span>';
+      }
+      updateProUI();
+      // Sticky-CTA triggern wenn Ergebnis angezeigt wird
+      maybeShowStickyCta();
+    }
+  }
+
+  // Wenn User Pro freischaltet → Sticky-CTA verstecken
+  const originalSetProMode = setProMode;
+  setProMode = function(v){
+    originalSetProMode(v);
+    if(v){
+      G('sticky-cta')?.classList.remove('show');
+      const banner = G('urgency-banner');
+      if(banner) banner.style.display='none';
+    } else {
+      const banner = G('urgency-banner');
+      if(banner) banner.style.display='';
+    }
+  };
+})();
+updateProUI();
+
+// ============================================================
+//  ERGEBNIS TEILEN
+// ============================================================
+function buildShareText(){
+  const r = calc();
+  const ort      = sv('f_ort')       || 'Unbekannt';
+  const typ      = sv('f_typ')       || 'Immobilie';
+  const kp       = fE(fv('f_kaufpreis'));
+  const qm       = fv('f_qm');
+  const empIcon  = r.emp === 'Kaufen' ? '✅' : r.emp === 'Mit Vorsicht prüfen' ? '⚠️' : '❌';
+
+  return [
+    `📊 ImmoDeal Analyse — ${typ} ${ort}`,
+    `${'━'.repeat(32)}`,
+    `Kaufpreis:     ${kp}`,
+    qm > 0 ? `Wohnfläche:    ${qm} m²` : null,
+    `Cashflow:      ${fE(r.cf)} / Monat`,
+    `Rendite:       ${fmt(r.rendite*100,1)} %`,
+    `Faktor:        ${fmt(r.faktor,1)}x`,
+    `DSCR:          ${fmt(r.dscr,2)}`,
+    `Score:         ${r.score}/14`,
+    `${'━'.repeat(32)}`,
+    `Empfehlung:    ${empIcon} ${r.emp}`,
+    `${'━'.repeat(32)}`,
+    `Analysiert mit ImmoDeal → immodeal.de`,
+  ].filter(Boolean).join('\n');
+}
+
+function updateSharePreview(){
+  const el = G('share-preview');
+  if(el) el.textContent = buildShareText();
+}
+
+function shareResultCopy(){
+  const text = buildShareText();
+  navigator.clipboard?.writeText(text).then(()=>{
+    const c = G('share-copy-confirm');
+    if(c){ c.style.display='block'; setTimeout(()=>c.style.display='none', 2500); }
+  }).catch(()=> showToast('Kopieren nicht möglich — bitte manuell markieren.'));
+}
+
+function shareResultWhatsApp(){
+  const text = buildShareText();
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+function shareResultEmail(){
+  const r    = calc();
+  const ort  = sv('f_ort') || 'Unbekannt';
+  const subj = encodeURIComponent(`ImmoDeal Analyse — ${ort}`);
+  const body = encodeURIComponent(buildShareText());
+  window.location.href = `mailto:?subject=${subj}&body=${body}`;
+}
+
+// Share-Vorschau aktualisieren wenn Seite 4 geladen wird
+const _origSwitchPage = switchPage;
+switchPage = function(n){
+  _origSwitchPage(n);
+  if(n === 4) setTimeout(updateSharePreview, 200);
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+
+
+// ⚠️  WICHTIG FÜR DICH ALS BETREIBER:
+//  Ersetze diese URL mit deiner echten Backend-URL sobald du
+//  das Backend deployed hast (siehe backend/server.js).
+//  Für lokale Tests: 'http://localhost:3000/api/scenarios'
+const KI_BACKEND_URL = 'https://immodeal-ki-production.up.railway.app/api/scenarios';
+
+function showKICard(){
+  const card = G('ki-szenarien-card');
+  if(card) card.style.display = 'block';
+}
+
+function generateKIScenarios(){
+  const r = calc();
+
+  // Daten aus der aktuellen Analyse sammeln
+  const data = {
+    ort:        sv('f_ort')       || 'Unbekannt',
+    typ:        sv('f_typ')       || 'Immobilie',
+    kaufpreis:  fv('f_kaufpreis') || 0,
+    qm:         fv('f_qm')        || 0,
+    baujahr:    fv('f_baujahr')   || 0,
+    kaltmiete:  fv('f_kaltmiete') || 0,
+    zins:       fv('f_zins')      || 0,
+    tilgung:    fv('f_tilgung')   || 0,
+    eigenkapital: fv('f_ek')      || 0,
+    cashflow:   r.cf              || 0,
+    rendite:    r.rendite         || 0,
+    faktor:     r.faktor          || 0,
+    dscr:       r.dscr            || 0,
+    score:      r.score           || 0,
+    empfehlung: r.emp             || '—',
+    markttyp:   r.marktLabel      || 'B-Stadt',
+  };
+
+  // UI: Loading-State
+  G('ki-trigger-area').style.display = 'none';
+  G('ki-loading').style.display      = 'block';
+  G('ki-error').style.display        = 'none';
+  G('ki-result').style.display       = 'none';
+
+  const loadingTexts = [
+    'KI analysiert deine Immobilie...',
+    'Szenarien werden berechnet...',
+    'Worst & Best Case werden ermittelt...',
+    'Fast fertig...',
+  ];
+  let ltIdx = 0;
+  const ltInterval = setInterval(()=>{
+    ltIdx = (ltIdx + 1) % loadingTexts.length;
+    const el = G('ki-loading-text');
+    if(el) el.textContent = loadingTexts[ltIdx];
+  }, 2200);
+
+  fetch(KI_BACKEND_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  .then(res => {
+    if(!res.ok) throw new Error(`Server-Fehler: ${res.status}`);
+    return res.json();
+  })
+  .then(json => {
+    clearInterval(ltInterval);
+    G('ki-loading').style.display = 'none';
+
+    if(json.error) throw new Error(json.error);
+
+    // Szenarien dynamisch rendern (Array-Format vom neuen Prompt)
+    const scenarioGrid = G('ki-scenarios-grid');
+    if(scenarioGrid){
+      const colorMap = {
+        worst:'ki-worst', stress:'ki-stress',
+        base:'ki-base', upside:'ki-upside', best:'ki-best',
+      };
+      const emojiMap = {worst:'📉',stress:'⚠️',base:'📊',upside:'📈',best:'🏆'};
+      const labelMap = {worst:'Worst Case',stress:'Stresstest',base:'Base Case',upside:'Upside Case',best:'Best Case'};
+
+      let scenarios = [];
+      if(Array.isArray(json.scenarios)){
+        // Neues Array-Format: [{id:'worst', title:..., body:..., metric:...}]
+        scenarios = json.scenarios;
+      } else if(json.scenarios && typeof json.scenarios === 'object'){
+        // Altes Objekt-Format: {worst:{title:..., body:..., metric:...}}
+        ['worst','stress','base','upside','best'].forEach(id => {
+          const sc = json.scenarios[id];
+          if(sc && (sc.title || sc.body)) scenarios.push({
+            id,
+            title:  sc.title  || sc.label || '—',
+            body:   sc.body   || '—',
+            metric: sc.metric || '',
+            label:  sc.label  || labelMap[id],
+            emoji:  sc.emoji  || emojiMap[id],
+          });
+        });
+      }
+
+      console.log('KI Szenarien geladen:', scenarios.length, JSON.stringify(scenarios[0]||{}));
+
+      scenarioGrid.innerHTML = scenarios.length > 0 ? scenarios.map(sc => {
+        const cssClass = colorMap[sc.id] || 'ki-base';
+        return `
+          <div class="ki-scenario-card ${cssClass}">
+            <div class="ki-scenario-label">${escapeHtml((emojiMap[sc.id]||sc.emoji||'')+' '+(labelMap[sc.id]||sc.label||sc.id||''))}</div>
+            <div class="ki-scenario-title">${escapeHtml(sc.title||'—')}</div>
+            <div class="ki-scenario-body">${escapeHtml(sc.body||'—')}</div>
+            ${sc.metric?`<div class="ki-scenario-metric">${escapeHtml(sc.metric)}</div>`:''}
+          </div>`;
+      }).join('') : '<p style="color:var(--muted);font-size:13px">Keine Szenarien erhalten — bitte erneut versuchen.</p>';
+    }
+
+    G('ki-verdict-box').textContent = json.verdict || '';
+
+    // Handlungsoptionen rendern
+    const optBox  = G('ki-optionen-box');
+    const optList = G('ki-optionen-list');
+    if(optBox && optList && json.optionen && json.optionen.length){
+      const icons  = ['blau','gruen','amber','grau'];
+      const emojis = ['🔧','💰','⏳','📋'];
+      optList.innerHTML = json.optionen.map((opt, i) => {
+        const col = icons[i % icons.length];
+        const ico = emojis[i % emojis.length];
+        return `
+          <div class="ki-option">
+            <div class="ki-option-icon ${col}">${ico}</div>
+            <div>
+              <div class="ki-option-label">Option ${String.fromCharCode(65+i)}</div>
+              <div class="ki-option-title">${escapeHtml(opt.titel || '')}</div>
+              <div class="ki-option-body">${escapeHtml(opt.beschreibung || '')}</div>
+              ${opt.kennzahl ? `<span class="ki-option-tag ${col}">${escapeHtml(opt.kennzahl)}</span>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+      optBox.style.display = 'block';
+    }
+
+    G('ki-result').style.display = 'block';
+    G('ki-trigger-area').style.display = 'none';
+  })
+  .catch(err => {
+    clearInterval(ltInterval);
+    G('ki-loading').style.display   = 'none';
+    G('ki-trigger-area').style.display = 'block';
+    G('ki-error').style.display     = 'block';
+    G('ki-error').textContent = `Fehler: ${err.message}. Bitte versuche es erneut oder prüfe deine Backend-URL.`;
+    console.error('KI-Fehler:', err);
+  });
+}
+
+// KI-Karte einblenden sobald Seite 4 angezeigt wird
+(function(){
+  const origGoTo = goTo;
+  goTo = function(n){
+    origGoTo(n);
+    if(n === 4) setTimeout(showKICard, 400);
+  };
+})();
+
+
+</script>
+</body>
+</html>
